@@ -9,7 +9,6 @@ export class GeneralValorantMediaApi {
     constructor() {
         this.client = new MediaApiClient();
     }
-
     async getVersion(): Promise<ValorantMediaApiVersionResponse> {
         return await this.client.axios
             .get(MEDIA_API_ENDPOINTS.VERSION)

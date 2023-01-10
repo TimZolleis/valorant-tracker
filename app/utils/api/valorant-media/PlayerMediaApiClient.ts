@@ -1,8 +1,7 @@
 import { MediaApiClient } from '~/utils/api/valorant-media/MediaApiClient';
-import { Puuid } from '~/models/interfaces/Player';
-import { ValorantMediaApiPlayerCardResponse } from '~/models/interfaces/MediaApiResponse';
+import type { ValorantMediaApiPlayerCardResponse } from '~/models/interfaces/MediaApiResponse';
 
-class PlayerMediaApi {
+export class PlayerMediaApi {
     client: MediaApiClient;
 
     constructor() {

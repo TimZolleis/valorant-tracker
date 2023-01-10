@@ -1,9 +1,8 @@
-import { AxiosInstance } from 'axios';
-import { Region } from '~/models/static/Region';
-import { ValorantUser } from '~/models/user/ValorantUser';
-import { AccessToken } from '~/models/interfaces/AccessToken';
-import { Entitlement } from '~/models/interfaces/Entitlement';
+import type { AxiosInstance } from 'axios';
 import axios from 'axios';
+import type { ValorantUser } from '~/models/user/ValorantUser';
+import type { AccessToken } from '~/models/interfaces/AccessToken';
+import type { Entitlement } from '~/models/interfaces/Entitlement';
 import {
     getAuthorizationHeader,
     getDefaultHeaders,
@@ -13,16 +12,23 @@ import {
 export class ValorantApiClient {
     axios: AxiosInstance;
     user: ValorantUser;
-    constructor(user: ValorantUser) {
-        this.axios = this.getAxiosClient(user.accessToken, user.entitlement);
+
+    constructor(user: ValorantUser, extraHeaders = {}) {
+        this.axios = this.getAxiosClient(user.accessToken, user.entitlement, extraHeaders);
         this.user = user;
     }
-    private getAxiosClient(accessToken: AccessToken, entitlementsToken: Entitlement) {
+
+    private getAxiosClient(
+        accessToken: AccessToken,
+        entitlementsToken: Entitlement,
+        extraHeaders: {}
+    ) {
         return axios.create({
             headers: {
                 ...getDefaultHeaders(),
                 ...getAuthorizationHeader(accessToken),
                 ...getEntitlementsHeader(entitlementsToken),
+                ...extraHeaders,
             },
         });
     }

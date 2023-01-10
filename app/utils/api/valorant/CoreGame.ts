@@ -1,9 +1,9 @@
-import type { ValorantApiClient } from '~/utils/api/valorant/Client';
 import type { PlayerResponse, Puuid } from '~/models/interfaces/Player';
 import type { MatchId } from '~/models/interfaces/PregameMatch';
 import { UrlBuilder } from '~/utils/request/url.server';
 import type { CoreGameMatch } from '~/models/interfaces/CoreGameMatch';
 import { NoCoreGameException } from '~/models/exception/NoCoreGameException';
+import type { ValorantApiClient } from '~/utils/api/valorant/ApiClient';
 
 export class CoreGameApi {
     client: ValorantApiClient;
@@ -15,7 +15,7 @@ export class CoreGameApi {
     async getPlayer(): Promise<PlayerResponse> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.region).buildMatchUrl(
+                new UrlBuilder(this.client.user.region).buildMatchUrl(
                     COREGAME_ENDPOINTS.GET_PLAYER(this.client.user.puuid)
                 )
             )
@@ -28,7 +28,7 @@ export class CoreGameApi {
     async getMatch(matchId: MatchId): Promise<CoreGameMatch> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.region).buildMatchUrl(
+                new UrlBuilder(this.client.user.region).buildMatchUrl(
                     COREGAME_ENDPOINTS.GET_MATCH(matchId)
                 )
             )

@@ -14,7 +14,7 @@ export function getLoginCookieOptions(): CookieOptions {
     if (!secret) {
         throw new NoSecretException();
     }
-    const name = 'Valorant-Store-Session';
+    const name = 'Valorant-Tracker-Session';
     const secure = false;
     const sameSite = 'lax';
     const path = '/';

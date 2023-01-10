@@ -50,3 +50,11 @@ export async function getUserFromSession(request: Request): Promise<ValorantUser
         );
     } else return undefined;
 }
+
+export async function requireUser(request: Request): Promise<ValorantUser> {
+    const user = await getUserFromSession(request);
+    if (!user) {
+        throw redirect('/login');
+    }
+    return user;
+}

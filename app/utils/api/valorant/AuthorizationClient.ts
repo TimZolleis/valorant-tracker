@@ -42,9 +42,7 @@ export class AuthorizationClient {
             .post(`${ENDPOINTS.AUTH}/api/v1/authorization`, {
                 ...AUTHORIZATION_BODY,
             })
-            .catch((error) => {
-                console.log('Auth Cookie error', error.response);
-            });
+            .catch((error) => {});
     }
 
     private async requestAccessToken(username: string, password: string) {

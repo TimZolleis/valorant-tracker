@@ -1,5 +1,5 @@
-import { AxiosInstance } from 'axios';
-import axios, { AxiosResponse } from 'axios/index';
+import type { AxiosInstance, AxiosResponse } from 'axios';
+import axios from 'axios';
 
 export class MediaApiClient {
     axios: AxiosInstance;

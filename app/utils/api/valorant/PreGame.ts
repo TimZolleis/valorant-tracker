@@ -1,8 +1,9 @@
-import type { ValorantApiClient } from '~/utils/api/valorant/Client';
 import { UrlBuilder } from '~/utils/request/url.server';
 import type { PlayerResponse, Puuid } from '~/models/interfaces/Player';
 import type { MatchId, PreGameMatch } from '~/models/interfaces/PregameMatch';
 import { NoPreGameException } from '~/models/exception/NoPreGameException';
+import { ValorantApiClient } from '~/utils/api/valorant/ApiClient';
+import type axios from 'axios';
 
 export class PreGameApi {
     private client: ValorantApiClient;
@@ -11,10 +12,10 @@ export class PreGameApi {
         this.client = client;
     }
 
-    async getMatchId(): Promise<PlayerResponse> {
+    async getMatchId(): Promise<string> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.region).buildMatchUrl(
+                new UrlBuilder(this.client.user.region).buildMatchUrl(
                     PREGAME_ENDPOINTS.GET_PLAYER(this.client.user.puuid)
                 )
             )
@@ -27,7 +28,7 @@ export class PreGameApi {
     async getMatch(matchId: MatchId): Promise<PreGameMatch> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.region).buildMatchUrl(
+                new UrlBuilder(this.client.user.region).buildMatchUrl(
                     PREGAME_ENDPOINTS.GET_MATCH(matchId)
                 )
             )
