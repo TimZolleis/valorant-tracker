@@ -5,13 +5,14 @@ import { HttpsCookieAgent } from 'http-cookie-agent/http';
 import type * as https from 'https';
 import axios from 'axios';
 import { AccessToken } from '~/models/interfaces/AccessToken';
+import { Entitlement } from '~/models/interfaces/Entitlement';
 
 export function getLoginClient(jar: CookieJar = new CookieJar()) {
     const client = wrapper(
         axios.create({
             httpAgent: getAgent(jar),
             httpsAgent: getAgent(jar),
-            headers: { ...getLoginHeaders() },
+            headers: { ...getDefaultHeaders() },
         })
     );
     return { cookieJar: jar, client };
@@ -31,7 +32,7 @@ function getAgent(jar: CookieJar): CookieAgent<https.Agent> {
     });
 }
 
-function getLoginHeaders() {
+export function getDefaultHeaders() {
     return {
         'content-type': AXIOS_CONSTANTS.CONTENT_TYPE,
         'user-agent': AXIOS_CONSTANTS.USER_AGENT,
@@ -52,5 +53,11 @@ const AXIOS_CONSTANTS = {
 export function getAuthorizationHeader(accessToken: AccessToken) {
     return {
         Authorization: `Bearer ${accessToken}`,
+    };
+}
+
+export function getEntitlementsHeader(entitlementsToken: Entitlement) {
+    return {
+        'X-Riot-Entitlements-JWT': entitlementsToken,
     };
 }
