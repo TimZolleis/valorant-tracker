@@ -8,6 +8,7 @@ import {
     getDefaultHeaders,
     getEntitlementsHeader,
 } from '~/utils/axios/axios.server';
+import { redirect } from '@remix-run/node';
 
 export class ValorantApiClient {
     axios: AxiosInstance;
@@ -34,10 +35,20 @@ export class ValorantApiClient {
     }
 
     async get(url: string) {
-        return await this.axios.get(url).then((res) => res.data);
+        return await this.axios
+            .get(url)
+            .then((res) => res.data)
+            .catch((error) => {
+                return redirect('/reauth');
+            });
     }
 
     async post(url: string, body: Object) {
-        return await this.axios.post(url, body).then((res) => res.data);
+        return await this.axios
+            .post(url, body)
+            .then((res) => res.data)
+            .catch((error) => {
+                return redirect('/reauth');
+            });
     }
 }

@@ -1,5 +1,5 @@
 import type { AxiosInstance } from 'axios';
-import type { CookieJar } from 'tough-cookie';
+import { CookieJar } from 'tough-cookie';
 import { getAuthorizationHeader, getLoginClient } from '~/utils/axios/axios.server';
 import { ENDPOINTS } from '~/models/static/Endpoints';
 import { parseTokenData } from '~/utils/token/riotToken.server';
@@ -9,56 +9,47 @@ import { ReauthenticationCookies } from '~/models/cookies/ReauthenticationCookie
 import type { RSOUserInfo } from '~/models/interfaces/RSOUserInfo';
 import { ValorantUser } from '~/models/user/ValorantUser';
 import { InvalidAccessTokenException } from '~/models/exception/login/InvalidAccessTokenException';
+import { Cookie } from 'tough-cookie';
+import { Entitlement } from '~/models/interfaces/Entitlement';
+import { updateSession } from '~/utils/session/session.server';
 
-export class AuthorizationClient {
+export class AuthenticationClient {
     client: AxiosInstance;
+    user: ValorantUser;
     jar: CookieJar;
 
-    constructor() {
-        const { cookieJar, client } = getLoginClient();
+    async init(user: ValorantUser) {
+        const jar = await this.getReauthenticationCookieJar(user);
+        const { cookieJar, client } = getLoginClient(jar);
         this.jar = cookieJar;
         this.client = client;
+        return this;
     }
 
-    async authorize(username: string, password: string) {
-        await this.requestCookies();
-        const { idToken, accessToken } = await this.requestAccessToken(username, password);
-        const entitlementsToken = await this.requestEntitlementsToken(accessToken);
-        const reauthenticationCookies = await new ReauthenticationCookies().init(this.jar);
-        const userData = await this.requestUserData(accessToken);
-        return new ValorantUser(
-            username,
-            userData.acct.game_name,
-            accessToken,
-            reauthenticationCookies,
-            entitlementsToken,
-            userData.affinity.pp,
-            userData.sub
-        );
+    private async getReauthenticationCookieJar(user: ValorantUser) {
+        const jar = new CookieJar();
+        const domain = ENDPOINTS.AUTH;
+        await Promise.all([
+            jar.setCookie(user.reauthenticationCookies.sub, domain),
+            jar.setCookie(user.reauthenticationCookies.csid, domain),
+            jar.setCookie(user.reauthenticationCookies.clid, domain),
+            jar.setCookie(user.reauthenticationCookies.ssid, domain),
+        ]);
+        return jar;
     }
 
-    private async requestCookies() {
+    private parseCookie(cookieString: string) {
+        return Cookie.parse(cookieString);
+    }
+
+    private async requestAccessToken() {
         return await this.client
-            .post(`${ENDPOINTS.AUTH}/api/v1/authorization`, {
-                ...AUTHORIZATION_BODY,
-            })
-            .catch((error) => {});
-    }
-
-    private async requestAccessToken(username: string, password: string) {
-        return await this.client
-            .put(`${ENDPOINTS.AUTH}/api/v1/authorization`, {
-                type: 'auth',
-                username: username,
-                password: password,
-                remember: true,
-                language: 'en_US',
-            })
+            .get(ENDPOINTS.REAUTH)
             .then((response) => {
-                return parseTokenData(response.data.response.parameters.uri);
+                return parseTokenData(response.request.res.responseUrl);
             })
             .catch((error) => {
-                throw new InvalidCredentialsException();
+                return parseTokenData(error.response.request.res.responseUrl);
             });
     }
 
@@ -87,8 +78,21 @@ export class AuthorizationClient {
                 throw new InvalidAccessTokenException();
             });
     }
-}
 
+    async reauthenticate() {
+        const { accessToken } = await this.requestAccessToken();
+        const entitlement = await this.requestEntitlementsToken(accessToken);
+        const reauthenticationCookies = await new ReauthenticationCookies().init(this.jar);
+        this.user.accessToken = accessToken;
+        this.user.entitlement = entitlement;
+        this.user.reauthenticationCookies = reauthenticationCookies;
+        return this;
+    }
+
+    async refreshLoginSession(request: Request, redirectUrl: string) {
+        return await updateSession(request, this.user, redirectUrl);
+    }
+}
 const AUTHORIZATION_BODY = {
     client_id: 'play-valorant-web-prod',
     nonce: 1,

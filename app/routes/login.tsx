@@ -4,7 +4,7 @@ import { PasswordInput } from '~/components/form/PasswordInput';
 import DefaultButton from '~/components/form/button/DefaultButton';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { AuthorizationClient } from '~/utils/api/valorant/AuthorizationClient';
+import { AuthenticationClient } from '~/utils/api/valorant/AuthenticationClient';
 import { createLoginSession } from '~/utils/session/session.server';
 import FormError from '~/components/form/error/FormError';
 
@@ -21,7 +21,7 @@ export const action: ActionFunction = async ({ request }) => {
         });
     }
     try {
-        const user = await new AuthorizationClient().authorize(username, password);
+        const user = await new AuthenticationClient().authorize(username, password);
         return createLoginSession(user, '/');
     } catch (exception: any) {
         return json({

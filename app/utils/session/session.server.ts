@@ -1,6 +1,7 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import { getLoginCookieOptions } from '~/utils/session/cookie.server';
 import { ValorantUser } from '~/models/user/ValorantUser';
+import { red } from 'kleur/colors';
 
 function getStorage() {
     return createCookieSessionStorage({
@@ -23,6 +24,16 @@ export async function createLoginSession(user: ValorantUser, redirectTo: string)
 
 export async function getSession(request: Request) {
     return await getStorage().getSession(request.headers.get('Cookie'));
+}
+
+export async function updateSession(request: Request, user: ValorantUser, redirectUrl: string) {
+    const session = await getSession(request);
+    session.set('user', user);
+    return redirect(redirectUrl, {
+        headers: {
+            'Set-Cookie': await getStorage().commitSession(session),
+        },
+    });
 }
 
 export async function destroySession(request: Request, redirectTo: string) {
