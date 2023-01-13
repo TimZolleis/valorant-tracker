@@ -1,25 +1,27 @@
-import { Region } from '~/models/static/Region';
-import { AccessToken } from '~/models/interfaces/AccessToken';
-import { Entitlement } from '~/models/interfaces/Entitlement';
-import { Puuid } from '~/models/interfaces/Player';
+import { PlayerRegion } from '~/models/static/PlayerRegion';
+import {
+    AuthenticationTokens,
+    Entitlement,
+} from '~/models/interfaces/authentication/AuthenticationTokens';
+import { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import { ReauthenticationCookies } from '~/models/cookies/ReauthenticationCookies';
 
-export class ValorantUser {
+export class AuthenticatedValorantUser {
     username: string;
     displayName: string;
-    accessToken: AccessToken;
+    accessToken: AuthenticationTokens;
     reauthenticationCookies: ReauthenticationCookies;
     entitlement: Entitlement;
-    region: Region;
+    region: PlayerRegion;
     puuid: Puuid;
 
     constructor(
         username: string,
         displayName: string,
-        accessToken: AccessToken,
+        accessToken: AuthenticationTokens,
         reauthenticationCookies: ReauthenticationCookies,
         entitlement: Entitlement,
-        region: Region,
+        region: PlayerRegion,
         puuid: Puuid
     ) {
         this.username = username;

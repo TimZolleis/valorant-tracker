@@ -1,18 +1,21 @@
-import type { PlayerResponse, Puuid } from '~/models/interfaces/Player';
-import type { MatchId } from '~/models/interfaces/PregameMatch';
+import type {
+    ValorantPlayerResponse,
+    Puuid,
+} from '~/models/interfaces/valorant-ingame/ValorantPlayer';
+import type { MatchId } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { UrlBuilder } from '~/utils/request/url.server';
-import type { CoreGameMatch } from '~/models/interfaces/CoreGameMatch';
-import { NoCoreGameException } from '~/models/exception/NoCoreGameException';
-import type { ValorantApiClient } from '~/utils/api/valorant/ApiClient';
+import type { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
+import { NoCoreGameException } from '~/models/exception/game/NoCoreGameException';
+import type { ValorantGameApiClient } from '~/utils/api/valorant/ValorantGameApiClient';
 
-export class CoreGameApi {
-    client: ValorantApiClient;
+export class ValorantCoreGameApiClient {
+    client: ValorantGameApiClient;
 
-    constructor(client: ValorantApiClient) {
+    constructor(client: ValorantGameApiClient) {
         this.client = client;
     }
 
-    async getPlayer(): Promise<PlayerResponse> {
+    async getPlayer(): Promise<ValorantPlayerResponse> {
         return await this.client.axios
             .get(
                 new UrlBuilder(this.client.user.region).buildMatchUrl(
@@ -25,7 +28,7 @@ export class CoreGameApi {
             });
     }
 
-    async getMatch(matchId: MatchId): Promise<CoreGameMatch> {
+    async getMatch(matchId: MatchId): Promise<ValorantCoreGame> {
         return await this.client.axios
             .get(
                 new UrlBuilder(this.client.user.region).buildMatchUrl(

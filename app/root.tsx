@@ -11,7 +11,7 @@ import {
 import styles from './styles/app.css';
 import DefaultLayout from '~/components/layout/DefaultLayout';
 import { getUserFromSession } from '~/utils/session/session.server';
-import type { ValorantUser } from '~/models/user/ValorantUser';
+import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import { json } from '@remix-run/node';
 
 export const meta: MetaFunction = () => ({
@@ -25,7 +25,7 @@ export function links() {
 }
 
 type LoaderData = {
-    user?: ValorantUser;
+    user?: AuthenticatedValorantUser;
 };
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await getUserFromSession(request);

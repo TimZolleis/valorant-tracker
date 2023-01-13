@@ -1,7 +1,7 @@
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
 
-export class MediaApiClient {
+export class ValorantMediaApiClient {
     axios: AxiosInstance;
 
     constructor() {

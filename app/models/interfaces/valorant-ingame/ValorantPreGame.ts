@@ -1,7 +1,6 @@
 export type MatchId = string;
 
-
-export interface PlayerIdentity {
+interface PlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -11,7 +10,7 @@ export interface PlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-export interface SeasonalBadgeInfo {
+interface SeasonalBadgeInfo {
     SeasonID: string;
     NumberOfWins: number;
     WinsByTier?: any;
@@ -30,12 +29,12 @@ export interface Player {
     IsCaptain: boolean;
 }
 
-export interface Team {
+interface Team {
     TeamID: string;
     Players: Player[];
 }
 
-export interface AllyPlayerIdentity {
+interface AllyPlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -45,7 +44,7 @@ export interface AllyPlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-export interface SeasonalBadgeInfo2 {
+interface SeasonalBadgeInfo2 {
     SeasonID: string;
     NumberOfWins: number;
     WinsByTier?: any;
@@ -53,7 +52,7 @@ export interface SeasonalBadgeInfo2 {
     LeaderboardRank: number;
 }
 
-export interface AllyPlayer {
+interface AllyPlayer {
     Subject: string;
     CharacterID: string;
     CharacterSelectionState: string;
@@ -64,15 +63,14 @@ export interface AllyPlayer {
     IsCaptain: boolean;
 }
 
-export interface AllyTeam {
+interface AllyTeam {
     TeamID: string;
     Players: AllyPlayer[];
 }
 
-export interface CastedVotes {
-}
+interface CastedVotes {}
 
-export interface PreGameMatch {
+export interface ValorantPreGame {
     ID: string;
     Version: number;
     Teams: Team[];
@@ -104,5 +102,3 @@ export interface PreGameMatch {
     TournamentMetadata?: any;
     RosterMetadata?: any;
 }
-
-

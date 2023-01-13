@@ -4,8 +4,10 @@ import type { CookieAgent } from 'http-cookie-agent/http';
 import { HttpsCookieAgent } from 'http-cookie-agent/http';
 import type * as https from 'https';
 import axios from 'axios';
-import { AccessToken } from '~/models/interfaces/AccessToken';
-import { Entitlement } from '~/models/interfaces/Entitlement';
+import {
+    AuthenticationTokens,
+    Entitlement,
+} from '~/models/interfaces/authentication/AuthenticationTokens';
 
 export function getLoginClient(jar: CookieJar = new CookieJar()) {
     const client = wrapper(
@@ -50,7 +52,7 @@ const AXIOS_CONSTANTS = {
     ],
 };
 
-export function getAuthorizationHeader(accessToken: AccessToken) {
+export function getAuthorizationHeader(accessToken: AuthenticationTokens) {
     return {
         Authorization: `Bearer ${accessToken}`,
     };

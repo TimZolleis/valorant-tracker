@@ -1,13 +1,14 @@
-import { json, LoaderFunction, redirect } from '@remix-run/node';
+import type { LoaderFunction } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { getUserFromSession } from '~/utils/session/session.server';
-import { PlayerApi } from '~/utils/api/valorant/PlayerApi';
-import { PlayerMediaApi } from '~/utils/api/valorant-media/PlayerMediaApiClient';
-import { PlayerLoadout } from '~/models/interfaces/PlayerLoadout';
-import { ValorantMediaApiPlayerCardResponse } from '~/models/interfaces/MediaApiResponse';
+import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
+import { PlayerMediaApi } from '~/utils/api/valorant-media/ValorantMediaPlayerApiClient';
+import type { ValorantPlayerLoadout } from '~/models/interfaces/valorant-ingame/ValorantPlayerLoadout';
+import type { ValorantMediaPlayerCard } from '~/models/interfaces/valorant-media/ValorantMediaPlayerCard';
 
 export type LoadoutLoaderData = {
-    loadout: PlayerLoadout;
-    playerCard: ValorantMediaApiPlayerCardResponse;
+    loadout: ValorantPlayerLoadout;
+    playerCard: ValorantMediaPlayerCard;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -15,7 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     if (!user) {
         throw redirect('/login');
     }
-    const loadout = await new PlayerApi(user).getLoadout();
+    const loadout = await new ValorantPlayerApiClient(user).getLoadout();
     const playerCard = await new PlayerMediaApi().fetchPlayerCard(loadout.Identity.PlayerCardID);
     return json<LoadoutLoaderData>({
         loadout,

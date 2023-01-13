@@ -1,4 +1,4 @@
-export interface Season {
+export interface ValorantSeason {
     ID: string;
     Name: string;
     Type: string;
@@ -7,7 +7,7 @@ export interface Season {
     IsActive: boolean;
 }
 
-export interface Event {
+export interface ValorantEvent {
     ID: string;
     Name: string;
     StartTime: Date;
@@ -15,10 +15,8 @@ export interface Event {
     IsActive: boolean;
 }
 
-export interface Content {
+export interface ValorantContent {
     DisabledIDs: any[];
-    Seasons: Season[];
-    Events: Event[];
+    Seasons: ValorantSeason[];
+    Events: ValorantEvent[];
 }
-
-

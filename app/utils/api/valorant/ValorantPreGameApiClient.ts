@@ -1,14 +1,17 @@
 import { UrlBuilder } from '~/utils/request/url.server';
-import type { PlayerResponse, Puuid } from '~/models/interfaces/Player';
-import type { MatchId, PreGameMatch } from '~/models/interfaces/PregameMatch';
-import { NoPreGameException } from '~/models/exception/NoPreGameException';
-import { ValorantApiClient } from '~/utils/api/valorant/ApiClient';
+import type {
+    ValorantPlayerResponse,
+    Puuid,
+} from '~/models/interfaces/valorant-ingame/ValorantPlayer';
+import type { MatchId, ValorantPreGame } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import { NoPreGameException } from '~/models/exception/game/NoPreGameException';
+import { ValorantGameApiClient } from '~/utils/api/valorant/ValorantGameApiClient';
 import type axios from 'axios';
 
-export class PreGameApi {
-    private client: ValorantApiClient;
+export class ValorantPreGameApiClient {
+    private client: ValorantGameApiClient;
 
-    constructor(client: ValorantApiClient) {
+    constructor(client: ValorantGameApiClient) {
         this.client = client;
     }
 
@@ -25,7 +28,7 @@ export class PreGameApi {
             });
     }
 
-    async getMatch(matchId: MatchId): Promise<PreGameMatch> {
+    async getMatch(matchId: MatchId): Promise<ValorantPreGame> {
         return await this.client.axios
             .get(
                 new UrlBuilder(this.client.user.region).buildMatchUrl(

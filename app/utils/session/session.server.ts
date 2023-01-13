@@ -1,6 +1,6 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import { getLoginCookieOptions } from '~/utils/session/cookie.server';
-import { ValorantUser } from '~/models/user/ValorantUser';
+import { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import { red } from 'kleur/colors';
 
 function getStorage() {
@@ -12,7 +12,7 @@ function getStorage() {
     });
 }
 
-export async function createLoginSession(user: ValorantUser, redirectTo: string) {
+export async function createLoginSession(user: AuthenticatedValorantUser, redirectTo: string) {
     const session = await getStorage().getSession();
     session.set('user', user);
     return redirect(redirectTo, {
@@ -26,7 +26,11 @@ export async function getSession(request: Request) {
     return await getStorage().getSession(request.headers.get('Cookie'));
 }
 
-export async function updateSession(request: Request, user: ValorantUser, redirectUrl: string) {
+export async function updateSession(
+    request: Request,
+    user: AuthenticatedValorantUser,
+    redirectUrl: string
+) {
     const session = await getSession(request);
     session.set('user', user);
     return redirect(redirectUrl, {
@@ -45,12 +49,14 @@ export async function destroySession(request: Request, redirectTo: string) {
     });
 }
 
-export async function getUserFromSession(request: Request): Promise<ValorantUser | undefined> {
+export async function getUserFromSession(
+    request: Request
+): Promise<AuthenticatedValorantUser | undefined> {
     const session = await getSession(request);
-    const user: ValorantUser | undefined = session.get('user');
+    const user: AuthenticatedValorantUser | undefined = session.get('user');
 
     if (user) {
-        return new ValorantUser(
+        return new AuthenticatedValorantUser(
             user.username,
             user.displayName,
             user.accessToken,
@@ -62,7 +68,7 @@ export async function getUserFromSession(request: Request): Promise<ValorantUser
     } else return undefined;
 }
 
-export async function requireUser(request: Request): Promise<ValorantUser> {
+export async function requireUser(request: Request): Promise<AuthenticatedValorantUser> {
     const user = await getUserFromSession(request);
     if (!user) {
         throw redirect('/login');

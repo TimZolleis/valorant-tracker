@@ -4,13 +4,13 @@ import { getAuthorizationHeader, getLoginClient } from '~/utils/axios/axios.serv
 import { ENDPOINTS } from '~/models/static/Endpoints';
 import { parseTokenData } from '~/utils/token/riotToken.server';
 import { InvalidCredentialsException } from '~/models/exception/login/InvalidCredentialsException';
-import type { AccessToken } from '~/models/interfaces/AccessToken';
+import type { AuthenticationTokens } from '~/models/interfaces/authentication/AuthenticationTokens';
 import { ReauthenticationCookies } from '~/models/cookies/ReauthenticationCookies';
-import type { RSOUserInfo } from '~/models/interfaces/RSOUserInfo';
-import { ValorantUser } from '~/models/user/ValorantUser';
+import type { RSOUserInfo } from '~/models/interfaces/authentication/RSOUserInfo';
+import { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import { InvalidAccessTokenException } from '~/models/exception/login/InvalidAccessTokenException';
 
-export class AuthenticationClient {
+export class RiotAuthenticationClient {
     client: AxiosInstance;
     jar: CookieJar;
 
@@ -20,13 +20,13 @@ export class AuthenticationClient {
         this.client = client;
     }
 
-    async authorize(username: string, password: string) {
+    async authorize(username: string, password: string): Promise<AuthenticatedValorantUser> {
         await this.requestCookies();
         const { idToken, accessToken } = await this.requestAccessToken(username, password);
         const entitlementsToken = await this.requestEntitlementsToken(accessToken);
         const reauthenticationCookies = await new ReauthenticationCookies().init(this.jar);
         const userData = await this.requestUserData(accessToken);
-        return new ValorantUser(
+        return new AuthenticatedValorantUser(
             username,
             userData.acct.game_name,
             accessToken,
@@ -62,7 +62,7 @@ export class AuthenticationClient {
             });
     }
 
-    private async requestEntitlementsToken(accessToken: AccessToken) {
+    private async requestEntitlementsToken(accessToken: AuthenticationTokens) {
         return await this.client
             .post(
                 `${ENDPOINTS.ENTITLEMENTS}/api/token/v1`,
@@ -75,7 +75,7 @@ export class AuthenticationClient {
             });
     }
 
-    private async requestUserData(accessToken: AccessToken): Promise<RSOUserInfo> {
+    private async requestUserData(accessToken: AuthenticationTokens): Promise<RSOUserInfo> {
         return await this.client
             .get(`${ENDPOINTS.AUTH}/userinfo`, {
                 headers: {
@@ -87,8 +87,6 @@ export class AuthenticationClient {
                 throw new InvalidAccessTokenException();
             });
     }
-
-
 }
 
 const AUTHORIZATION_BODY = {

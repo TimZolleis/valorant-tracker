@@ -1,6 +1,6 @@
 import { useMatches } from '@remix-run/react';
 import { useMemo } from 'react';
-import { ValorantUser } from '~/models/user/ValorantUser';
+import { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 
 function useMatchesData(id: string): Record<string, unknown> | undefined {
     const matchingRoutes = useMatches();
@@ -11,7 +11,7 @@ function useMatchesData(id: string): Record<string, unknown> | undefined {
     return route?.data;
 }
 
-export function useOptionalUser(): ValorantUser | undefined {
+export function useOptionalUser(): AuthenticatedValorantUser | undefined {
     const data = useMatchesData('root');
-    return data?.user as ValorantUser | undefined;
+    return data?.user as AuthenticatedValorantUser | undefined;
 }

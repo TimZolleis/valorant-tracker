@@ -1,10 +1,10 @@
 import { useOptionalUser } from '~/utils/hooks/user';
 import { json, LoaderFunction } from '@remix-run/node';
 import { getUserFromSession, requireUser } from '~/utils/session/session.server';
-import { ValorantUser } from '~/models/user/ValorantUser';
+import { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 
 type LoaderData = {
-    user: ValorantUser;
+    user: AuthenticatedValorantUser;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

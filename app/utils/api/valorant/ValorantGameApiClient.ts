@@ -1,8 +1,10 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import type { ValorantUser } from '~/models/user/ValorantUser';
-import type { AccessToken } from '~/models/interfaces/AccessToken';
-import type { Entitlement } from '~/models/interfaces/Entitlement';
+import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
+import type {
+    AuthenticationTokens,
+    Entitlement,
+} from '~/models/interfaces/authentication/AuthenticationTokens';
 import {
     getAuthorizationHeader,
     getDefaultHeaders,
@@ -10,17 +12,17 @@ import {
 } from '~/utils/axios/axios.server';
 import { redirect } from '@remix-run/node';
 
-export class ValorantApiClient {
+export class ValorantGameApiClient {
     axios: AxiosInstance;
-    user: ValorantUser;
+    user: AuthenticatedValorantUser;
 
-    constructor(user: ValorantUser, extraHeaders = {}) {
+    constructor(user: AuthenticatedValorantUser, extraHeaders = {}) {
         this.axios = this.getAxiosClient(user.accessToken, user.entitlement, extraHeaders);
         this.user = user;
     }
 
     private getAxiosClient(
-        accessToken: AccessToken,
+        accessToken: AuthenticationTokens,
         entitlementsToken: Entitlement,
         extraHeaders: {}
     ) {

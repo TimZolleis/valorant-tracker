@@ -1,4 +1,4 @@
-import type { Region } from '~/models/static/Region';
+import type { PlayerRegion } from '~/models/static/PlayerRegion';
 import { ReferenceImplicitGlobal } from '@typescript-eslint/scope-manager/dist/referencer/Reference';
 
 export interface Pw {
@@ -17,7 +17,7 @@ export interface Acct {
 }
 
 export interface Affinity {
-    pp: Region;
+    pp: PlayerRegion;
 }
 
 export interface RSOUserInfo {

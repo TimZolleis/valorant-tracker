@@ -1,15 +1,15 @@
-import { MediaApiClient } from '~/utils/api/valorant-media/MediaApiClient';
-import type { MediaCompetitiveSeasonResponse } from '~/models/interfaces/MediaApiCompetitiveSeasonsResponse';
-import type { MediaCompetitiveTierResponse } from '~/models/interfaces/MediaApiCompetitiveTierResponse';
+import { ValorantMediaApiClient } from '~/utils/api/valorant-media/ValorantMediaApiClient';
+import type { ValorantMediaCompetitiveSeason } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveSeason';
+import type { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 
-export class ContentMediaApi {
-    client: MediaApiClient;
+export class ValorantMediaContentApiClient {
+    client: ValorantMediaApiClient;
 
     constructor() {
-        this.client = new MediaApiClient();
+        this.client = new ValorantMediaApiClient();
     }
 
-    async getCompetitiveSeasons(): Promise<MediaCompetitiveSeasonResponse[]> {
+    async getCompetitiveSeasons(): Promise<ValorantMediaCompetitiveSeason[]> {
         return await this.client.get(MEDIA_CONTENT_ENDPOINTS.COMPETITIVE_SEASONS);
     }
 
@@ -20,8 +20,8 @@ export class ContentMediaApi {
         });
     }
     async getCompetitiveTiers(
-        competitiveSeason: MediaCompetitiveSeasonResponse
-    ): Promise<MediaCompetitiveTierResponse> {
+        competitiveSeason: ValorantMediaCompetitiveSeason
+    ): Promise<ValorantMediaCompetitiveTier> {
         return await this.client.get(
             MEDIA_CONTENT_ENDPOINTS.COMPETITIVE_TIER_BY_UUID(competitiveSeason.competitiveTiersUuid)
         );

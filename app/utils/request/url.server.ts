@@ -1,10 +1,10 @@
 import { ENDPOINTS } from '~/models/static/Endpoints';
-import type { Region } from '~/models/static/Region';
+import type { PlayerRegion } from '~/models/static/PlayerRegion';
 
 export class UrlBuilder {
-    private readonly region: Region;
+    private readonly region: PlayerRegion;
 
-    constructor(region: Region) {
+    constructor(region: PlayerRegion) {
         this.region = region;
     }
 

@@ -11,7 +11,7 @@ export interface Tier {
     rankTriangleUpIcon: string;
 }
 
-export interface MediaCompetitiveTierResponse {
+export interface ValorantMediaCompetitiveTier {
     uuid: string;
     assetObjectName: string;
     tiers: Tier[];

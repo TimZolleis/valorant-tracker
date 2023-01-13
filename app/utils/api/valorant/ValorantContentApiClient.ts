@@ -1,23 +1,26 @@
-import { ValorantApiClient } from '~/utils/api/valorant/ApiClient';
-import { ValorantUser } from '~/models/user/ValorantUser';
-import { Config } from '~/models/static/Config';
+import { ValorantGameApiClient } from '~/utils/api/valorant/ValorantGameApiClient';
+import { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
+import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { UrlBuilder } from '~/utils/request/url.server';
-import { Content, Season } from '~/models/interfaces/Content';
+import {
+    ValorantContent,
+    ValorantSeason,
+} from '~/models/interfaces/valorant-ingame/ValorantContent';
 
 type ActiveSeason = {
-    act?: Season;
-    episode?: Season;
+    act?: ValorantSeason;
+    episode?: ValorantSeason;
 };
 
-export class ContentApi {
-    client: ValorantApiClient;
+export class ValorantContentApiClient {
+    client: ValorantGameApiClient;
 
-    async init(user: ValorantUser) {
-        const config = await new Config().init();
-        this.client = new ValorantApiClient(user, config.getHeaders());
+    async init(user: AuthenticatedValorantUser) {
+        const config = await new RiotApiClientConfig().init();
+        this.client = new ValorantGameApiClient(user, config.getHeaders());
     }
 
-    async getContent(): Promise<Content> {
+    async getContent(): Promise<ValorantContent> {
         return await this.client.get(
             new UrlBuilder(this.client.user.region).buildSharedUrl(CONTENT_ENDPOINTS.CONTENT)
         );

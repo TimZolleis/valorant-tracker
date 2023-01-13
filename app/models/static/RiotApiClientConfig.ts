@@ -1,4 +1,4 @@
-import { GeneralValorantMediaApi } from '~/utils/api/valorant-media/GeneralMediaApi';
+import { GeneralValorantMediaApi } from '~/utils/api/valorant-media/ValorantMediaCommonApiClient';
 
 interface ClientPlatform {
     platformType: string;
@@ -7,7 +7,7 @@ interface ClientPlatform {
     platformChipset: string;
 }
 
-export class Config {
+export class RiotApiClientConfig {
     clientPlatform: ClientPlatform;
     clientVersion: string;
 
@@ -29,7 +29,6 @@ export class Config {
             platformChipset: 'Unknown',
         };
     }
-
     getClientPlatform() {
         return btoa(JSON.stringify(this.clientPlatform));
     }

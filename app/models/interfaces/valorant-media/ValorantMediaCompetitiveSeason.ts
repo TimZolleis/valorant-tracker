@@ -7,7 +7,7 @@ interface Border {
     assetPath: string;
 }
 
-export interface MediaCompetitiveSeasonResponse {
+export interface ValorantMediaCompetitiveSeason {
     uuid: string;
     startTime: Date;
     endTime: Date;

@@ -1,4 +1,4 @@
-export interface Gun {
+interface Gun {
     ID: string;
     SkinID: string;
     SkinLevelID: string;
@@ -9,13 +9,13 @@ export interface Gun {
     CharmLevelID: string;
 }
 
-export interface Spray {
+interface Spray {
     EquipSlotID: string;
     SprayID: string;
     SprayLevelID?: any;
 }
 
-export interface Identity {
+interface Identity {
     PlayerCardID: string;
     PlayerTitleID: string;
     AccountLevel: number;
@@ -23,7 +23,7 @@ export interface Identity {
     HideAccountLevel: boolean;
 }
 
-export interface PlayerLoadout {
+export interface ValorantPlayerLoadout {
     Subject: string;
     Version: number;
     Guns: Gun[];
