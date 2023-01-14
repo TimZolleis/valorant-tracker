@@ -48,16 +48,19 @@ export class ValorantGameApiClient {
     }
 
     async get(request: RiotRequest, config?: AxiosRequestConfig<any>) {
-        console.log('Fetching', request.getUrl());
         return await this.axios
             .get(request.getUrl(), config)
             .then((res) => res.data)
             .catch((error) => {
-                if (error.response?.status < 500) {
-                    console.log(error);
-                    // throw redirect('/reauth');
+                if (error.response?.status === 400) {
+                    throw redirect('/reauth');
                 }
-                this.getFallback(request, config);
+
+                if (error.response?.status >= 500) {
+                    this.getFallback(request, config);
+                } else {
+                    throw new Error(error.message);
+                }
             });
     }
 
@@ -66,10 +69,15 @@ export class ValorantGameApiClient {
             .post(request.getUrl(), body)
             .then((res) => res.data)
             .catch((error) => {
-                if (error.response?.status < 500) {
+                if (error.response?.status === 400) {
                     throw redirect('/reauth');
                 }
-                this.postFallback(request, body, config);
+
+                if (error.response?.status >= 500) {
+                    this.postFallback(request, body, config);
+                } else {
+                    throw new Error(error.message);
+                }
             });
     }
 
@@ -80,8 +88,12 @@ export class ValorantGameApiClient {
             .get(fallbackUrl.getUrl(), config)
             .then((res) => res.data)
             .catch((error) => {
-                if (error.response?.status < 500) {
+                if (error.response?.status === 400) {
                     throw redirect('/reauth');
+                }
+
+                if (error.response?.status >= 500) {
+                    this.getFallback(request, config);
                 }
                 throw new RiotServicesUnavailableException();
             });
@@ -93,8 +105,12 @@ export class ValorantGameApiClient {
             .post(fallbackUrl.getUrl(), body, config)
             .then((res) => res.data)
             .catch((error) => {
-                if (error.response?.status < 500) {
+                if (error.response?.status === 400) {
                     throw redirect('/reauth');
+                }
+
+                if (error.response?.status >= 500) {
+                    this.postFallback(request, body, config);
                 }
                 throw new RiotServicesUnavailableException();
             });

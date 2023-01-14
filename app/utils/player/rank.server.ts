@@ -12,7 +12,6 @@ export type PlayerRank = {
     tier?: Tier;
     unrated: boolean;
     gamesNeededForRating?: number;
-
     rr: number;
 };
 
@@ -42,7 +41,6 @@ export async function getPlayerRank(
         rr,
     };
 }
-
 async function checkGamesNeededForRating(
     activeSeason: ActiveSeason,
     user: AuthenticatedValorantUser

@@ -2,8 +2,8 @@ import { Profile } from '~/components/user/Profile';
 
 const NavBar = () => {
     return (
-        <div className={'w-full p-3 bg-valorant-blue flex justify-between'}>
-            <p className={'font-work-sans font-semibold text-headline-medium text-white'}>
+        <div className={'w-full p-3 bg-mud flex justify-between'}>
+            <p className={'font-manrope font-semibold text-title-large text-white'}>
                 valorant.track
             </p>
         </div>

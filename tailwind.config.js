@@ -6,7 +6,7 @@ module.exports = {
             colors: {
                 'valorant-red': '#FF4654',
                 'valorant-blue': '#0F1923',
-                'valorant-mud': '#111111',
+                mud: '#111111',
             },
             fontFamily: {
                 'work-sans': ['Work Sans', 'sans-serif'],

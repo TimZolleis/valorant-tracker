@@ -1,4 +1,4 @@
-interface Match {
+export interface ValorantMatch {
     MatchID: string;
     MapID: string;
     SeasonID: string;
@@ -16,5 +16,5 @@ interface Match {
 export interface ValorantCompetitiveUpdate {
     Version: number;
     Subject: string;
-    Matches: Match[];
+    Matches: ValorantMatch[];
 }
