@@ -26,14 +26,10 @@ export async function getSession(request: Request) {
     return await getStorage().getSession(request.headers.get('Cookie'));
 }
 
-export async function updateSession(
-    request: Request,
-    user: AuthenticatedValorantUser,
-    redirectUrl: string
-) {
+export async function updateSession(request: Request, user: AuthenticatedValorantUser) {
     const session = await getSession(request);
     session.set('user', user);
-    return redirect(redirectUrl, {
+    return redirect('/', {
         headers: {
             'Set-Cookie': await getStorage().commitSession(session),
         },

@@ -1,6 +1,7 @@
 import { ValorantMediaApiClient } from '~/utils/api/valorant-media/ValorantMediaApiClient';
 import type { ValorantMediaCompetitiveSeason } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveSeason';
 import type { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
+import { ActiveSeason } from '~/utils/api/valorant/ValorantContentApiClient';
 
 export class ValorantMediaContentApiClient {
     client: ValorantMediaApiClient;
@@ -15,15 +16,26 @@ export class ValorantMediaContentApiClient {
 
     async getCurrentCompetitiveSeason(activeSeasonUuid: string) {
         const seasons = await this.getCompetitiveSeasons();
-        return seasons.find((competitiveSeason) => {
+        const found = seasons.find((competitiveSeason) => {
             return competitiveSeason.seasonUuid === activeSeasonUuid;
         });
+        console.log(found);
+        return found;
     }
     async getCompetitiveTiers(
         competitiveSeason: ValorantMediaCompetitiveSeason
     ): Promise<ValorantMediaCompetitiveTier> {
         return await this.client.get(
             MEDIA_CONTENT_ENDPOINTS.COMPETITIVE_TIER_BY_UUID(competitiveSeason.competitiveTiersUuid)
+        );
+    }
+
+    async getCurrentCompetitiveTiers(activeSeason: ActiveSeason) {
+        return await this.getCurrentCompetitiveSeason(activeSeason.act.ID).then(
+            async (competitiveSeason) => {
+                console.log(competitiveSeason?.competitiveTiersUuid);
+                return await this.getCompetitiveTiers(competitiveSeason!);
+            }
         );
     }
 }

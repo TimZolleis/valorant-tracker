@@ -5,8 +5,10 @@ import { RiotReauthenticationClient } from '~/utils/api/valorant/RiotReauthentic
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await requireUser(request);
     const reauthenticationClient = await new RiotReauthenticationClient().init(user);
+    console.log('Trying to reauthenticate');
     const reauthenticatedUser = await reauthenticationClient.reauthenticate();
-    return await updateSession(request, reauthenticatedUser, '/');
+    console.log('Reauth successful, new User', reauthenticatedUser);
+    return await updateSession(request, reauthenticatedUser);
 };
 export const ReauthenticationPage = () => {
     return (

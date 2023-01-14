@@ -6,7 +6,6 @@ const NavBar = () => {
             <p className={'font-work-sans font-semibold text-headline-medium text-white'}>
                 valorant.track
             </p>
-            <Profile />
         </div>
     );
 };

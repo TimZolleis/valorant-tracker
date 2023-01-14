@@ -11,6 +11,15 @@ export class RiotApiClientConfig {
     clientPlatform: ClientPlatform;
     clientVersion: string;
 
+    constructor(clientPlatform?: ClientPlatform, clientVersion?: string) {
+        if (clientPlatform) {
+            this.clientPlatform = clientPlatform;
+        }
+        if (clientVersion) {
+            this.clientVersion = clientVersion;
+        }
+    }
+
     async init() {
         this.clientVersion = await this.fetchVersion();
         this.clientPlatform = this.fetchClientPlatform();
@@ -21,6 +30,7 @@ export class RiotApiClientConfig {
         const version = await new GeneralValorantMediaApi().getVersion();
         return version.riotClientVersion;
     }
+
     private fetchClientPlatform() {
         return {
             platformType: 'PC',
@@ -29,12 +39,15 @@ export class RiotApiClientConfig {
             platformChipset: 'Unknown',
         };
     }
+
     getClientPlatform() {
         return btoa(JSON.stringify(this.clientPlatform));
     }
+
     getClientVersion() {
         return this.clientVersion;
     }
+
     getHeaders() {
         return {
             'X-Riot-ClientPlatform': this.getClientPlatform(),

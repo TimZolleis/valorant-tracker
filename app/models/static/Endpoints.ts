@@ -8,3 +8,57 @@ export const ENDPOINTS = {
     SHARED: (region: PlayerRegion) => `https://shared.${region}.a.pvp.net`,
     PARTY: (region: PlayerRegion) => `https://glz-${region}-1.${region}.a.pvp.net`,
 };
+
+export class Endpoint {
+    private region: PlayerRegion;
+    private endpoint: string;
+    private endpointType: keyof typeof ENDPOINTS;
+
+    constructor(region: PlayerRegion, endpointType?: keyof typeof ENDPOINTS) {
+        this.region = region;
+        switch (endpointType) {
+            case 'BASE': {
+                this.base();
+                return this;
+            }
+            case 'SHARED': {
+                this.shared();
+                return this;
+            }
+            case 'PARTY': {
+                this.party();
+                return this;
+            }
+        }
+    }
+
+    base() {
+        this.endpointType = 'BASE';
+        this.endpoint = ENDPOINTS.BASE(this.region);
+        return this;
+    }
+
+    shared() {
+        this.endpointType = 'SHARED';
+        this.endpoint = ENDPOINTS.SHARED(this.region);
+        return this;
+    }
+
+    party() {
+        this.endpointType = 'PARTY';
+        this.endpoint = ENDPOINTS.PARTY(this.region);
+        return this;
+    }
+
+    setRegion(region: PlayerRegion) {
+        this.region = region;
+    }
+
+    getEndpointType() {
+        return this.endpointType;
+    }
+
+    getEndpoint() {
+        return this.endpoint;
+    }
+}

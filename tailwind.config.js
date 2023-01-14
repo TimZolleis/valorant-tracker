@@ -10,6 +10,7 @@ module.exports = {
             },
             fontFamily: {
                 'work-sans': ['Work Sans', 'sans-serif'],
+                manrope: ['Manrope', 'sans-serif'],
             },
             fontSize: {
                 'display-large': '64px',

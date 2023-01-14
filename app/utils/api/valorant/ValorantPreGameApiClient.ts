@@ -1,4 +1,4 @@
-import { UrlBuilder } from '~/utils/request/url.server';
+import { RiotRequest } from '~/utils/request/url.server';
 import type {
     ValorantPlayerResponse,
     Puuid,
@@ -18,7 +18,7 @@ export class ValorantPreGameApiClient {
     async getMatchId(): Promise<string> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.user.region).buildMatchUrl(
+                new RiotRequest(this.client.user.region).buildMatchUrl(
                     PREGAME_ENDPOINTS.GET_PLAYER(this.client.user.puuid)
                 )
             )
@@ -31,7 +31,7 @@ export class ValorantPreGameApiClient {
     async getMatch(matchId: MatchId): Promise<ValorantPreGame> {
         return await this.client.axios
             .get(
-                new UrlBuilder(this.client.user.region).buildMatchUrl(
+                new RiotRequest(this.client.user.region).buildMatchUrl(
                     PREGAME_ENDPOINTS.GET_MATCH(matchId)
                 )
             )

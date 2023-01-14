@@ -8,6 +8,7 @@ import { ReauthenticationCookies } from '~/models/cookies/ReauthenticationCookie
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import { InvalidAccessTokenException } from '~/models/exception/login/InvalidAccessTokenException';
 import { updateSession } from '~/utils/session/session.server';
+import { redirect } from '@remix-run/node';
 
 export class RiotReauthenticationClient {
     client: AxiosInstance;
@@ -17,6 +18,7 @@ export class RiotReauthenticationClient {
     async init(user: AuthenticatedValorantUser) {
         const jar = await this.getReauthenticationCookieJar(user);
         const { cookieJar, client } = getLoginClient(jar);
+        this.user = user;
         this.jar = cookieJar;
         this.client = client;
         return this;
@@ -33,6 +35,7 @@ export class RiotReauthenticationClient {
         ]);
         return jar;
     }
+
     private async requestAccessToken() {
         return await this.client
             .get(ENDPOINTS.REAUTH)
@@ -40,7 +43,13 @@ export class RiotReauthenticationClient {
                 return parseTokenData(response.request.res.responseUrl);
             })
             .catch((error) => {
-                return parseTokenData(error.response.request.res.responseUrl);
+                console.log('Error with ATOKEN');
+                try {
+                    return parseTokenData(error.response.request.res.responseUrl);
+                } catch (error) {
+                    console.log('big error, redirecting');
+                    throw redirect('/login');
+                }
             });
     }
 
@@ -58,8 +67,10 @@ export class RiotReauthenticationClient {
     }
 
     async reauthenticate() {
+        console.log('Reauth started');
         const { accessToken } = await this.requestAccessToken();
         const entitlement = await this.requestEntitlementsToken(accessToken);
+        console.log('Token obtained', accessToken);
         const reauthenticationCookies = await new ReauthenticationCookies().init(this.jar);
         this.user.accessToken = accessToken;
         this.user.entitlement = entitlement;

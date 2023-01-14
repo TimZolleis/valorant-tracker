@@ -1,4 +1,4 @@
-import type { AxiosInstance } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import type {
@@ -11,13 +11,24 @@ import {
     getEntitlementsHeader,
 } from '~/utils/axios/axios.server';
 import { redirect } from '@remix-run/node';
+import { RiotServicesUnavailableException } from '~/models/exception/riot/RiotServicesUnavailableException';
+import { RiotRequest } from '~/utils/request/url.server';
+import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
+import { clientConfig } from '~/config/clientConfig';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
     user: AuthenticatedValorantUser;
 
     constructor(user: AuthenticatedValorantUser, extraHeaders = {}) {
-        this.axios = this.getAxiosClient(user.accessToken, user.entitlement, extraHeaders);
+        const config = new RiotApiClientConfig(
+            clientConfig.clientPlatform,
+            clientConfig.clientVersion
+        );
+        this.axios = this.getAxiosClient(user.accessToken, user.entitlement, {
+            ...config.getHeaders(),
+            ...extraHeaders,
+        });
         this.user = user;
     }
 
@@ -36,21 +47,56 @@ export class ValorantGameApiClient {
         });
     }
 
-    async get(url: string) {
+    async get(request: RiotRequest, config?: AxiosRequestConfig<any>) {
+        console.log('Fetching', request.getUrl());
         return await this.axios
-            .get(url)
+            .get(request.getUrl(), config)
             .then((res) => res.data)
             .catch((error) => {
-                return redirect('/reauth');
+                if (error.response?.status < 500) {
+                    console.log(error);
+                    // throw redirect('/reauth');
+                }
+                this.getFallback(request, config);
             });
     }
 
-    async post(url: string, body: Object) {
+    async post(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
         return await this.axios
-            .post(url, body)
+            .post(request.getUrl(), body)
             .then((res) => res.data)
             .catch((error) => {
-                return redirect('/reauth');
+                if (error.response?.status < 500) {
+                    throw redirect('/reauth');
+                }
+                this.postFallback(request, body, config);
+            });
+    }
+
+    async getFallback(request: RiotRequest, config?: AxiosRequestConfig<any>) {
+        const fallbackUrl = request.getFallback();
+        console.log('FallbackURL:', fallbackUrl.getUrl());
+        return await this.axios
+            .get(fallbackUrl.getUrl(), config)
+            .then((res) => res.data)
+            .catch((error) => {
+                if (error.response?.status < 500) {
+                    throw redirect('/reauth');
+                }
+                throw new RiotServicesUnavailableException();
+            });
+    }
+
+    async postFallback(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
+        const fallbackUrl = request.setRegion('na');
+        return await this.axios
+            .post(fallbackUrl.getUrl(), body, config)
+            .then((res) => res.data)
+            .catch((error) => {
+                if (error.response?.status < 500) {
+                    throw redirect('/reauth');
+                }
+                throw new RiotServicesUnavailableException();
             });
     }
 }

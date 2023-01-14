@@ -1,20 +1,45 @@
-import { ENDPOINTS } from '~/models/static/Endpoints';
+import { Endpoint, ENDPOINTS } from '~/models/static/Endpoints';
 import type { PlayerRegion } from '~/models/static/PlayerRegion';
 
-export class UrlBuilder {
-    private readonly region: PlayerRegion;
+export class RiotRequest {
+    private region: PlayerRegion;
+    private endpoint: Endpoint;
+    private url: string;
 
     constructor(region: PlayerRegion) {
         this.region = region;
     }
 
-    buildMatchUrl(endpoint: string) {
-        return `${ENDPOINTS.PARTY(this.region)}/${endpoint}`;
+    buildMatchUrl(url: string) {
+        this.endpoint = new Endpoint(this.region).party();
+        this.url = url;
+        return this;
     }
-    buildBaseUrl(endpoint: string) {
-        return `${ENDPOINTS.BASE(this.region)}/${endpoint}`;
+
+    buildBaseUrl(url: string) {
+        this.endpoint = new Endpoint(this.region).base();
+        this.url = url;
+        return this;
     }
-    buildSharedUrl(endpoint: string) {
-        return `${ENDPOINTS.SHARED(this.region)}/${endpoint}`;
+
+    buildSharedUrl(url: string) {
+        this.endpoint = new Endpoint(this.region).shared();
+        this.url = url;
+        return this;
+    }
+
+    setRegion(region: PlayerRegion) {
+        this.region = region;
+        this.endpoint.setRegion(this.region);
+        return this;
+    }
+
+    getFallback() {
+        this.endpoint = new Endpoint('na', this.endpoint.getEndpointType());
+        return this;
+    }
+
+    getUrl() {
+        return `${this.endpoint.getEndpoint()}/${this.url}`;
     }
 }
