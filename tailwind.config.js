@@ -11,6 +11,7 @@ module.exports = {
             fontFamily: {
                 'work-sans': ['Work Sans', 'sans-serif'],
                 manrope: ['Manrope', 'sans-serif'],
+                inter: ['Inter', 'sans-serif'],
             },
             fontSize: {
                 'display-large': '64px',
@@ -20,8 +21,8 @@ module.exports = {
                 'headline-medium': '28px',
                 'headline-small': '24px',
                 'title-large': '22px',
-                'title-medium': '16px',
-                'title-small': '14px',
+                'title-medium': '20px',
+                'title-small': '18px',
                 'label-large': '16px',
                 'label-medium': '14px',
                 'label-small': '12px',

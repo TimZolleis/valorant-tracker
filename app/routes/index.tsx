@@ -6,15 +6,16 @@ import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValor
 import type { PlayerRank } from '~/utils/player/rank.server';
 import { getPlayerRank } from '~/utils/player/rank.server';
 import { useLoaderData } from '@remix-run/react';
-import { PlayerRankComponent } from '~/components/user/rank/PlayerRank';
+import { PlayerRankComponent } from '~/components/user/competitive/rank/PlayerRankComponent';
 import ContentContainer from '~/components/common/Container';
 import { getCompetitiveHistory } from '~/utils/player/history.server';
-import {
+import type {
     ValorantCompetitiveUpdate,
     ValorantMatch,
 } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
-import PlayerCompetitiveUpdateComponent from '~/components/user/competitive/PlayerCompetitiveUpdateComponent';
-import { PlayerRRDifferenceComponent } from '~/components/user/competitive/PlayerRRDifferenceComponent';
+import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
+import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
+import { RankHistoryComponent } from '~/components/match/history/RankHistoryComponent';
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
@@ -26,7 +27,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     const user = await requireUser(request);
     const rank = await getPlayerRank(user, user.puuid);
     const competitiveUpdate = await getCompetitiveHistory(user);
-    console.log('Competitive update length', competitiveUpdate.Matches.length);
     return json<LoaderData>({ user, rank, competitiveUpdate });
 };
 
@@ -43,19 +43,21 @@ export default function Index() {
     const user = useOptionalUser();
     return (
         <>
-            <p className={'text-white font-manrope font-bold text-headline-small mb-3'}>My Data</p>
-            <div className={'flex gap-2 w-full'}>
-                <ContentContainer>
-                    <PlayerRankComponent
-                        rank={rank}
-                        rankDifference={calculateRrDifference(
-                            competitiveUpdate.Matches
-                        )}></PlayerRankComponent>
-                </ContentContainer>
+            <div className={'space-y-5'}>
+                <div className={'flex gap-2 w-full'}>
+                    <ContentContainer>
+                        <CurrentMatchComponent />
+                    </ContentContainer>
+                </div>
+                <div className={'flex gap-5 w-full'}>
+                    <ContentContainer>
+                        <MatchHistoryComponent />
+                    </ContentContainer>
+                    <ContentContainer>
+                        <RankHistoryComponent />
+                    </ContentContainer>
+                </div>
             </div>
-            <ContentContainer>
-                <PlayerCompetitiveUpdateComponent competitiveUpdate={competitiveUpdate} />
-            </ContentContainer>
         </>
     );
 }

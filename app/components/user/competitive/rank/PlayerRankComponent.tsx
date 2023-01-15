@@ -1,5 +1,5 @@
 import type { PlayerRank } from '~/utils/player/rank.server';
-import { PlayerRRDifferenceComponent } from '~/components/user/competitive/PlayerRRDifferenceComponent';
+import { PlayerRRDifferenceComponent } from '~/components/user/competitive/rank/PlayerRRDifferenceComponent';
 
 export const PlayerRankComponent = ({
     rank,
@@ -16,11 +16,11 @@ export const PlayerRankComponent = ({
                     <div>
                         <p
                             className={
-                                'font-manrope text-white text-headline-medium first-letter:capitalize'
+                                'font-inter text-white font-bold text-headline-medium first-letter:capitalize'
                             }>
                             {rank.tier?.tierName.toLowerCase()}
                         </p>
-                        <p className={'font-manrope -mt-2 text-gray-400'}>{rank.rr}RR</p>
+                        <p className={'font-inter -mt-2 text-gray-400'}>{rank.rr}RR</p>
                     </div>
                 </div>
                 <PlayerRRDifferenceComponent difference={rankDifference} />

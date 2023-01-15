@@ -1,3 +1,5 @@
+import { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
+
 export type MatchId = string;
 
 interface PlayerIdentity {
@@ -44,14 +46,6 @@ interface AllyPlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-interface SeasonalBadgeInfo2 {
-    SeasonID: string;
-    NumberOfWins: number;
-    WinsByTier?: any;
-    Rank: number;
-    LeaderboardRank: number;
-}
-
 interface AllyPlayer {
     Subject: string;
     CharacterID: string;
@@ -59,7 +53,7 @@ interface AllyPlayer {
     PregamePlayerState: string;
     CompetitiveTier: number;
     PlayerIdentity: AllyPlayerIdentity;
-    SeasonalBadgeInfo: SeasonalBadgeInfo2;
+    SeasonalBadgeInfo: SeasonalBadgeInfo;
     IsCaptain: boolean;
 }
 
@@ -101,4 +95,10 @@ export interface ValorantPreGame {
     altModesFlagADA: boolean;
     TournamentMetadata?: any;
     RosterMetadata?: any;
+}
+
+export interface ValorantMatchId {
+    Subject: Puuid;
+    MatchID: MatchId;
+    Version: number;
 }

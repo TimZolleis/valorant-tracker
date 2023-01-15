@@ -517,40 +517,36 @@ video {
   position: static;
 }
 
-.mb-3 {
-  margin-bottom: 0.75rem;
-}
-
 .mt-5 {
   margin-top: 1.25rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
 }
 
 .-mt-2 {
   margin-top: -0.5rem;
 }
 
-.-mt-5 {
-  margin-top: -1.25rem;
-}
-
-.-mt-10 {
-  margin-top: -2.5rem;
-}
-
-.-mt-20 {
-  margin-top: -5rem;
-}
-
-.-ml-5 {
-  margin-left: -1.25rem;
-}
-
-.ml-5 {
-  margin-left: 1.25rem;
+.inline {
+  display: inline;
 }
 
 .flex {
   display: flex;
+}
+
+.h-8 {
+  height: 2rem;
+}
+
+.h-4 {
+  height: 1rem;
 }
 
 .h-12 {
@@ -573,6 +569,30 @@ video {
   width: 50%;
 }
 
+.w-4 {
+  width: 1rem;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -591,6 +611,16 @@ video {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-5 {
+  gap: 1.25rem;
+}
+
+.space-y-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
 }
 
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
@@ -626,6 +656,11 @@ video {
   background-color: rgb(255 70 84 / var(--tw-bg-opacity));
 }
 
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
 .bg-red-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 226 226 / var(--tw-bg-opacity));
@@ -643,14 +678,6 @@ video {
   padding: 0.75rem;
 }
 
-.p-2 {
-  padding: 0.5rem;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -665,16 +692,16 @@ video {
   text-align: center;
 }
 
-.font-manrope {
-  font-family: Manrope, sans-serif;
-}
-
 .font-work-sans {
   font-family: Work Sans, sans-serif;
 }
 
-.text-headline-small {
-  font-size: 24px;
+.font-inter {
+  font-family: Inter, sans-serif;
+}
+
+.font-manrope {
+  font-family: Manrope, sans-serif;
 }
 
 .text-headline-large {
@@ -689,32 +716,41 @@ video {
   font-size: 22px;
 }
 
+.text-body-medium {
+  font-size: 14px;
+}
+
+.text-label-medium {
+  font-size: 14px;
+}
+
 .text-title-medium {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .text-headline-medium {
   font-size: 28px;
 }
 
-.text-display-large {
-  font-size: 64px;
-}
-
-.text-display-small {
-  font-size: 40px;
+.font-semibold {
+  font-weight: 600;
 }
 
 .font-bold {
   font-weight: 700;
 }
 
-.font-semibold {
-  font-weight: 600;
-}
-
 .font-normal {
   font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.text-gray-500 {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
 .text-white {
@@ -722,9 +758,14 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-gray-500 {
+.text-gray-400 {
   --tw-text-opacity: 1;
-  color: rgb(107 114 128 / var(--tw-text-opacity));
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .text-red-500 {
@@ -735,11 +776,6 @@ video {
 .text-green-500 {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
-}
-
-.text-gray-400 {
-  --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
 .ring {
@@ -776,6 +812,22 @@ video {
 
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.delay-150 {
+  transition-delay: 150ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /*Black*/
@@ -940,12 +992,134 @@ video {
   font-weight: 200;
 }
 
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 100;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Thin.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Thin.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 200;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-ExtraLight.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-ExtraLight.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 300;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Light.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Light.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 400;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Regular.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Regular.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 500;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Medium.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Medium.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 600;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-SemiBold.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-SemiBold.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 700;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Bold.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Bold.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 800;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-ExtraBold.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-ExtraBold.woff?v=3.19") format("woff");
+}
+
+@font-face {
+  font-family: 'Inter';
+
+  font-style:  normal;
+
+  font-weight: 900;
+
+  font-display: swap;
+
+  src: url("/resources/fonts/inter/Inter-Black.woff2?v=3.19") format("woff2"),
+    url("/resources/fonts/inter/Inter-Black.woff?v=3.19") format("woff");
+}
+
 html {
   background-color: black;
 }
 
 .first-letter\:capitalize::first-letter {
   text-transform: capitalize;
+}
+
+.hover\:bg-mud:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 17 17 / var(--tw-bg-opacity));
 }
 
 
