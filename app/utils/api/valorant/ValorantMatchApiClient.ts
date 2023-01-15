@@ -19,6 +19,7 @@ import {
 import { NoPreGameException } from '~/models/exception/game/NoPreGameException';
 import { NoCoreGameException } from '~/models/exception/game/NoCoreGameException';
 import { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
+import { ValorantMatchHistory } from '~/models/interfaces/valorant-ingame/ValorantMatchHistory';
 
 export class ValorantMatchApiClient {
     client: ValorantGameApiClient;
@@ -27,7 +28,11 @@ export class ValorantMatchApiClient {
         this.client = new ValorantGameApiClient(user);
     }
 
-    async getMatchHistory(puuid: Puuid, queue: ValorantQueue, numberOfGames: number = 2) {
+    async getMatchHistory(
+        puuid: Puuid,
+        queue: ValorantQueue,
+        numberOfGames: number = 2
+    ): Promise<ValorantMatchHistory> {
         const startIndex = 0;
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(

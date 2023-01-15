@@ -16,18 +16,52 @@ import type {
 import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
 import { RankHistoryComponent } from '~/components/match/history/RankHistoryComponent';
+import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiClient';
+import { QUEUE, ValorantQueue } from '~/models/static/Queue';
+import { determinePlayerTeam, getMatchMap } from '~/utils/match/match.server';
+import {
+    Team,
+    ValorantMatchDetails,
+} from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
+import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
     rank: PlayerRank;
     competitiveUpdate: ValorantCompetitiveUpdate;
+    matchHistory: MatchHistory[];
 };
+
+export type MatchHistory = {
+    matchDetails: ValorantMatchDetails;
+    map?: ValorantMediaMap;
+    playerTeam?: Team;
+};
+
+async function getMatchHistory(
+    user: AuthenticatedValorantUser,
+    queue: ValorantQueue
+): Promise<MatchHistory[]> {
+    const client = new ValorantMatchApiClient(user);
+    const matches = await client
+        .getMatchHistory(user.puuid, queue, 5)
+        .then((result) => result.History);
+    return await Promise.all(
+        matches.map(async (match) => {
+            const matchDetails = await client.getMatchDetails(match.MatchID);
+            const map = await getMatchMap(matchDetails);
+            const playerTeam = determinePlayerTeam(user.puuid, matchDetails);
+            return { matchDetails, map, playerTeam };
+        })
+    );
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await requireUser(request);
     const rank = await getPlayerRank(user, user.puuid);
     const competitiveUpdate = await getCompetitiveHistory(user);
-    return json<LoaderData>({ user, rank, competitiveUpdate });
+    const matchHistory = await getMatchHistory(user, QUEUE.COMPETITIVE);
+    return json<LoaderData>({ user, rank, competitiveUpdate, matchHistory });
 };
 
 function calculateRrDifference(matches: ValorantMatch[]) {
@@ -39,7 +73,7 @@ function calculateRrDifference(matches: ValorantMatch[]) {
 }
 
 export default function Index() {
-    const { rank, competitiveUpdate } = useLoaderData<LoaderData>();
+    const { rank, competitiveUpdate, matchHistory } = useLoaderData<LoaderData>();
     const user = useOptionalUser();
     return (
         <>
@@ -51,7 +85,7 @@ export default function Index() {
                 </div>
                 <div className={'flex gap-5 w-full'}>
                     <ContentContainer>
-                        <MatchHistoryComponent />
+                        <MatchHistoryComponent history={matchHistory} />
                     </ContentContainer>
                     <ContentContainer>
                         <RankHistoryComponent />

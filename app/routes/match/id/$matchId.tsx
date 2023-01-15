@@ -19,13 +19,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const matchId = params.matchId;
     const user = await requireUser(request);
     try {
-        console.log('Searching match', matchId);
         const match = await new ValorantMatchApiClient(user).getMatchDetails(matchId!);
         const playerTeam = await determinePlayerTeam(user.puuid, match);
         const map = await getMatchMap(match);
         return json<MatchDetails>({ match, playerTeam, map });
     } catch (error) {
-        console.log('Error', matchId);
         return json({ error: 'Match not found' });
     }
 };

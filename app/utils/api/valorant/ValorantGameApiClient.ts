@@ -59,6 +59,7 @@ export class ValorantGameApiClient {
                 if (error.response?.status >= 500) {
                     this.getFallback(request, config);
                 } else {
+                    console.log(error);
                     throw new Error(error.message);
                 }
             });
