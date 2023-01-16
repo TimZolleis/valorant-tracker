@@ -44,6 +44,10 @@ export class ValorantMatchApiClient {
                     startIndex: startIndex,
                     endIndex: numberOfGames,
                 },
+            },
+            {
+                cacheable: true,
+                expiration: 3600,
             }
         );
     }
@@ -52,7 +56,12 @@ export class ValorantMatchApiClient {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.MATCH_DETAILS(matchId)
-            )
+            ),
+            {},
+            {
+                cacheable: true,
+                expiration: 3600 * 12,
+            }
         );
     }
 
@@ -119,6 +128,10 @@ export class ValorantMatchApiClient {
                     startIndex: 0,
                     endIndex: numberOfGames,
                 },
+            },
+            {
+                cacheable: true,
+                expiration: 1800,
             }
         );
     }

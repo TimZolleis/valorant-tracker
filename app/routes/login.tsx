@@ -7,6 +7,7 @@ import { json } from '@remix-run/node';
 import { RiotAuthenticationClient } from '~/utils/api/valorant/RiotAuthenticationClient';
 import { createLoginSession } from '~/utils/session/session.server';
 import FormError from '~/components/form/error/FormError';
+import { WhiteButton } from '~/components/form/button/WhiteButton';
 
 type ActionData = {
     error?: string;
@@ -35,11 +36,14 @@ const LoginPage = () => {
     return (
         <>
             <Form method={'post'} className={'flex flex-col w-full items-center mt-5'}>
-                <div className={'w-6/12 ring ring-1 ring-valorant-red rounded-xl p-10'}>
-                    <h2 className={'text-center font-work-sans font-semibold text-headline-large'}>
+                <div className={'w-6/12 ring ring-1 ring-gray-600 rounded-xl p-10'}>
+                    <h2
+                        className={
+                            'text-center font-inter font-semibold text-headline-large text-white'
+                        }>
                         Login
                     </h2>
-                    <p className={'font-work-sans text-gray-500 text-center'}>
+                    <p className={'font-inter text-gray-300 text-center'}>
                         Please login with your Riot Games credentials
                     </p>
                     <div className={'mt-5 space-y-2'}>
@@ -47,8 +51,10 @@ const LoginPage = () => {
                         <PasswordInput label={'Password'} id={'password'} />
                         <FormError text={actionData?.error} />
                     </div>
-                    <div className={'mt-5'}>
-                        <DefaultButton text={'Submit'} />
+                    <div className={'mt-5 w-full'}>
+                        <WhiteButton doesSubmit={true}>
+                            <p className={'text-body-medium'}>Login</p>
+                        </WhiteButton>
                     </div>
                 </div>
             </Form>

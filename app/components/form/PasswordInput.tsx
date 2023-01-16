@@ -27,12 +27,12 @@ export const PasswordInput = ({ label, id, onChange }: PasswordInputProps) => {
 
     return (
         <div className={'flex flex-col gap-2'}>
-            <label className={'font-work-sans font-bold'} htmlFor={id}>
+            <label className={'font-inter font-bold text-white'} htmlFor={id}>
                 {label}
             </label>
             <input
                 required={true}
-                className={'p-3 rounded-xl bg-neutral-100 ring ring-1 ring-slate-200'}
+                className={'p-3 rounded-lg bg-transparent ring ring-1 ring-gray-400'}
                 type={type}
                 id={id}
                 name={id}

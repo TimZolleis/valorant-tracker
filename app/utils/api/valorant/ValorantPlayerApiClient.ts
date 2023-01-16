@@ -31,6 +31,10 @@ export class ValorantPlayerApiClient {
                     startIndex: 0,
                     endIndex: 1,
                 },
+            },
+            {
+                cacheable: true,
+                expiration: 600,
             }
         );
     }
@@ -39,7 +43,12 @@ export class ValorantPlayerApiClient {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 PLAYER_ENDPOINT.MMR(this.client.user.puuid)
-            )
+            ),
+            {},
+            {
+                cacheable: true,
+                expiration: 900,
+            }
         );
     }
 }

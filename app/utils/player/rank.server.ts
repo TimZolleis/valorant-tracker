@@ -26,13 +26,15 @@ export async function getPlayerRank(
     const competitiveTiers = await new ValorantMediaContentApiClient().getCurrentCompetitiveTiers(
         activeSeason!
     );
+    console.log('Competitive tiers checked');
     const { unrated, gamesNeededForRating } = await checkGamesNeededForRating(activeSeason, user);
+    console.log('Games needed for rating checked');
     const playerApi = new ValorantPlayerApiClient(user);
     const mostRecentGame = await playerApi.getMostRecentGame(true);
+    console.log('Recent game fetched');
     const tier = competitiveTiers.tiers.find((tier) => {
         return tier.tier === mostRecentGame.Matches[0].TierAfterUpdate;
     });
-
     const rr = mostRecentGame.Matches[0].RankedRatingAfterUpdate;
     return {
         unrated,

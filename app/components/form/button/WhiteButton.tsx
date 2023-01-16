@@ -12,7 +12,7 @@ export const WhiteButton = ({ children, doesSubmit, onClick, disabled = false }:
     return (
         <button
             className={
-                'rounded-lg bg-white p-3 font-inter font-medium text-black text-label-medium'
+                'rounded-lg bg-white w-full p-3 font-inter font-medium text-black text-label-medium'
             }
             type={doesSubmit ? 'submit' : 'button'}
             disabled={disabled}

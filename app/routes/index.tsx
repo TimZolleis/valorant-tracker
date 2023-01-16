@@ -6,7 +6,6 @@ import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValor
 import type { PlayerRank } from '~/utils/player/rank.server';
 import { getPlayerRank } from '~/utils/player/rank.server';
 import { useLoaderData } from '@remix-run/react';
-import { PlayerRankComponent } from '~/components/user/competitive/rank/PlayerRankComponent';
 import ContentContainer from '~/components/common/Container';
 import { getCompetitiveHistory } from '~/utils/player/history.server';
 import type {
@@ -17,13 +16,15 @@ import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
 import { RankHistoryComponent } from '~/components/match/history/RankHistoryComponent';
 import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiClient';
-import { QUEUE, ValorantQueue } from '~/models/static/Queue';
+import type { ValorantQueue } from '~/models/static/Queue';
+import { QUEUE } from '~/models/static/Queue';
 import { determinePlayerTeam, getMatchMap } from '~/utils/match/match.server';
-import {
+import type {
     Team,
     ValorantMatchDetails,
 } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
-import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
+import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
+import { DateTime } from 'luxon';
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
@@ -61,6 +62,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const rank = await getPlayerRank(user, user.puuid);
     const competitiveUpdate = await getCompetitiveHistory(user);
     const matchHistory = await getMatchHistory(user, QUEUE.COMPETITIVE);
+
     return json<LoaderData>({ user, rank, competitiveUpdate, matchHistory });
 };
 
@@ -73,7 +75,7 @@ function calculateRrDifference(matches: ValorantMatch[]) {
 }
 
 export default function Index() {
-    const { rank, competitiveUpdate, matchHistory } = useLoaderData<LoaderData>();
+    const { matchHistory, rank, competitiveUpdate } = useLoaderData<LoaderData>();
     const user = useOptionalUser();
     return (
         <>
@@ -83,7 +85,7 @@ export default function Index() {
                         <CurrentMatchComponent />
                     </ContentContainer>
                 </div>
-                <div className={'flex gap-5 w-full'}>
+                <div className={'grid grid-cols-1 gap-5 md:grid-cols-2'}>
                     <ContentContainer>
                         <MatchHistoryComponent history={matchHistory} />
                     </ContentContainer>

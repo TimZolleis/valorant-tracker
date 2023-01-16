@@ -15,6 +15,7 @@ import { RiotServicesUnavailableException } from '~/models/exception/riot/RiotSe
 import { RiotRequest } from '~/utils/request/url.server';
 import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { clientConfig } from '~/config/clientConfig';
+import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -47,22 +48,33 @@ export class ValorantGameApiClient {
         });
     }
 
-    async get(request: RiotRequest, config?: AxiosRequestConfig<any>) {
-        return await this.axios
+    async get(request: RiotRequest, config?: AxiosRequestConfig<any>, cacheConfig?: CacheConfig) {
+        if (cacheConfig) {
+            const cachedValue = await this.getCache(request.getUrl());
+            if (cachedValue) {
+                return JSON.parse(cachedValue);
+            }
+        }
+        console.log('Fetchin from api', request.getUrl());
+        const result = await this.axios
             .get(request.getUrl(), config)
             .then((res) => res.data)
             .catch((error) => {
                 if (error.response?.status === 400) {
                     throw redirect('/reauth');
                 }
-
                 if (error.response?.status >= 500) {
                     this.getFallback(request, config);
                 } else {
-                    console.log(error);
                     throw new Error(error.message);
                 }
             });
+        if (cacheConfig) {
+            console.log('Setting to cache');
+            await this.setCache(request.getUrl(), JSON.stringify(result), cacheConfig);
+        }
+
+        return result;
     }
 
     async post(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
@@ -82,22 +94,37 @@ export class ValorantGameApiClient {
             });
     }
 
-    async getFallback(request: RiotRequest, config?: AxiosRequestConfig<any>) {
-        const fallbackUrl = request.getFallback();
-        console.log('FallbackURL:', fallbackUrl.getUrl());
-        return await this.axios
-            .get(fallbackUrl.getUrl(), config)
+    async getFallback(
+        request: RiotRequest,
+        config?: AxiosRequestConfig<any>,
+        cacheConfig?: CacheConfig
+    ) {
+        const fallbackRequest = request.getFallback();
+        if (cacheConfig) {
+            const cachedValue = await this.getCache(request.getUrl());
+            if (cachedValue) {
+                return cachedValue;
+            }
+        }
+        const result = await this.axios
+            .get(fallbackRequest.getUrl(), config)
             .then((res) => res.data)
             .catch((error) => {
                 if (error.response?.status === 400) {
                     throw redirect('/reauth');
                 }
-
                 if (error.response?.status >= 500) {
                     this.getFallback(request, config);
+                } else {
+                    console.log(error);
+                    throw new Error(error.message);
                 }
-                throw new RiotServicesUnavailableException();
             });
+        if (cacheConfig) {
+            await this.setCache(request.getUrl(), JSON.stringify(result), cacheConfig);
+        }
+
+        return result;
     }
 
     async postFallback(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
@@ -115,5 +142,22 @@ export class ValorantGameApiClient {
                 }
                 throw new RiotServicesUnavailableException();
             });
+    }
+
+    private async getCache(url: string) {
+        const client = await new RedisClient().init();
+        return await client.getValue(url);
+    }
+
+    private async setCache(url: string, value: string, cacheConfig: CacheConfig) {
+        const client = await new RedisClient().init();
+        return await client.setValue(url, value, cacheConfig);
+    }
+
+    private getDefaultCacheConfig() {
+        return {
+            cacheable: false,
+            expiration: 3600,
+        };
     }
 }

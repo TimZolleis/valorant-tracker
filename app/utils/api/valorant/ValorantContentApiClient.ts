@@ -23,7 +23,12 @@ export class ValorantContentApiClient {
 
     async getContent(): Promise<ValorantContent> {
         return await this.client.get(
-            new RiotRequest(this.client.user.region).buildSharedUrl(CONTENT_ENDPOINTS.CONTENT)
+            new RiotRequest(this.client.user.region).buildSharedUrl(CONTENT_ENDPOINTS.CONTENT),
+            {},
+            {
+                cacheable: true,
+                expiration: 86400,
+            }
         );
     }
     async getActiveSeason(): Promise<ActiveSeason> {

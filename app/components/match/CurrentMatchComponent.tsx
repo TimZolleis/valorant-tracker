@@ -1,6 +1,6 @@
 import { NoCurrentMatchComponent } from '~/components/match/NoCurrentMatchComponent';
 import { useFetcher } from '@remix-run/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LiveMatchLoaderData } from '~/routes/match/live';
 
 const CurrentMatchComponent = () => {
@@ -9,12 +9,21 @@ const CurrentMatchComponent = () => {
         if (fetcher.type === 'init') {
             fetcher.load('/match/live');
         }
+
+        if (fetcher.data?.pregame || fetcher.data?.coregame) {
+            setHasGame(true);
+        }
+        if (fetcher.data?.error) {
+            setHasGame(false);
+        }
     }, [fetcher]);
 
-    if (fetcher.data?.error) {
-        return <NoCurrentMatchComponent />;
+    const [hasGame, setHasGame] = useState(false);
+
+    if (hasGame) {
+        return <div>Lol Game going on</div>;
     } else {
-        return <div>Live match going on!</div>;
+        return <NoCurrentMatchComponent />;
     }
 };
 

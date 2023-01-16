@@ -51,7 +51,7 @@ export const NoCurrentMatchComponent = () => {
                     Currently there is no live match detected. Rechecking in{' '}
                     <span className={'font-bold text-white'}>{remainingTime}</span>
                 </p>
-                <div className={'mt-3'}>
+                <div className={'mt-3 w-40'}>
                     <WhiteButton
                         doesSubmit={false}
                         onClick={() => checkForGame()}
