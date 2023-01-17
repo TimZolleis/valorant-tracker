@@ -6,7 +6,10 @@ import {
 } from '~/utils/api/valorant/ValorantContentApiClient';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
-import { Tier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
+import {
+    Tier,
+    ValorantMediaCompetitiveTier,
+} from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 
 export type PlayerRank = {
     tier?: Tier;
@@ -17,22 +20,14 @@ export type PlayerRank = {
 
 export async function getPlayerRank(
     user: AuthenticatedValorantUser,
-    puuid: Puuid
+    puuid: Puuid,
+    activeSeason: ActiveSeason,
+    competitiveTier: ValorantMediaCompetitiveTier
 ): Promise<PlayerRank> {
-    const activeSeason = await new ValorantContentApiClient()
-        .init(user)
-        .then((client) => client.getActiveSeason());
-
-    const competitiveTiers = await new ValorantMediaContentApiClient().getCurrentCompetitiveTiers(
-        activeSeason!
-    );
-    console.log('Competitive tiers checked');
     const { unrated, gamesNeededForRating } = await checkGamesNeededForRating(activeSeason, user);
-    console.log('Games needed for rating checked');
     const playerApi = new ValorantPlayerApiClient(user);
     const mostRecentGame = await playerApi.getMostRecentGame(true);
-    console.log('Recent game fetched');
-    const tier = competitiveTiers.tiers.find((tier) => {
+    const tier = competitiveTier.tiers.find((tier) => {
         return tier.tier === mostRecentGame.Matches[0].TierAfterUpdate;
     });
     const rr = mostRecentGame.Matches[0].RankedRatingAfterUpdate;
@@ -43,6 +38,19 @@ export async function getPlayerRank(
         rr,
     };
 }
+
+export async function getCurrentCompetitiveTiers(user: AuthenticatedValorantUser) {
+    const activeSeason = await new ValorantContentApiClient()
+        .init(user)
+        .then((client) => client.getActiveSeason());
+
+    const competitiveTier = await new ValorantMediaContentApiClient().getCurrentCompetitiveTiers(
+        activeSeason!
+    );
+
+    return { activeSeason, competitiveTier };
+}
+
 async function checkGamesNeededForRating(
     activeSeason: ActiveSeason,
     user: AuthenticatedValorantUser

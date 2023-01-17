@@ -1,11 +1,6 @@
 import { MatchHistory } from '~/routes';
-import { useEffect } from 'react';
 
 export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
-    useEffect(() => {
-        console.log(history);
-    }, []);
-
     return (
         <div
             className={
@@ -23,7 +18,11 @@ export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
                                     {team.roundsWon}
                                 </p>
                             </div>
-                            {index === 0 && <p className={'text-white font-inter font-bold'}>-</p>}
+                            {index === 0 && (
+                                <p key={index} className={'text-white font-inter font-bold'}>
+                                    -
+                                </p>
+                            )}
                         </>
                     ))}
             </div>

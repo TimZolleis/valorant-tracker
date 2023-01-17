@@ -4,17 +4,17 @@ import { json } from '@remix-run/node';
 import { requireUser } from '~/utils/session/session.server';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import type { PlayerRank } from '~/utils/player/rank.server';
-import { getPlayerRank } from '~/utils/player/rank.server';
+import { getCurrentCompetitiveTiers, getPlayerRank } from '~/utils/player/rank.server';
 import { useLoaderData } from '@remix-run/react';
 import ContentContainer from '~/components/common/Container';
-import { getCompetitiveHistory } from '~/utils/player/history.server';
+import { getCompetitiveUpdates } from '~/utils/player/history.server';
 import type {
     ValorantCompetitiveUpdate,
     ValorantMatch,
 } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
-import { RankHistoryComponent } from '~/components/match/history/RankHistoryComponent';
+import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
 import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiClient';
 import type { ValorantQueue } from '~/models/static/Queue';
 import { QUEUE } from '~/models/static/Queue';
@@ -24,13 +24,14 @@ import type {
     ValorantMatchDetails,
 } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
 import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
-import { DateTime } from 'luxon';
+import { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
     rank: PlayerRank;
     competitiveUpdate: ValorantCompetitiveUpdate;
     matchHistory: MatchHistory[];
+    competitiveTier: ValorantMediaCompetitiveTier;
 };
 
 export type MatchHistory = {
@@ -59,11 +60,12 @@ async function getMatchHistory(
 
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await requireUser(request);
-    const rank = await getPlayerRank(user, user.puuid);
-    const competitiveUpdate = await getCompetitiveHistory(user);
+    const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
+    const rank = await getPlayerRank(user, user.puuid, activeSeason, competitiveTier);
+    const competitiveUpdate = await getCompetitiveUpdates(user);
     const matchHistory = await getMatchHistory(user, QUEUE.COMPETITIVE);
 
-    return json<LoaderData>({ user, rank, competitiveUpdate, matchHistory });
+    return json<LoaderData>({ user, rank, competitiveUpdate, matchHistory, competitiveTier });
 };
 
 function calculateRrDifference(matches: ValorantMatch[]) {
@@ -75,7 +77,7 @@ function calculateRrDifference(matches: ValorantMatch[]) {
 }
 
 export default function Index() {
-    const { matchHistory, rank, competitiveUpdate } = useLoaderData<LoaderData>();
+    const { matchHistory, rank, competitiveUpdate, competitiveTier } = useLoaderData<LoaderData>();
     const user = useOptionalUser();
     return (
         <>
@@ -90,7 +92,7 @@ export default function Index() {
                         <MatchHistoryComponent history={matchHistory} />
                     </ContentContainer>
                     <ContentContainer>
-                        <RankHistoryComponent />
+                        <CompetitiveUpdateComponent competitiveUpdate={competitiveUpdate} />
                     </ContentContainer>
                 </div>
             </div>

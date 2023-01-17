@@ -3,15 +3,11 @@ import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValor
 import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import type { ValorantQueue } from '~/models/static/Queue';
 import { RiotRequest } from '~/utils/request/url.server';
-import type {
-    ValorantCompetitiveUpdate,
-    ValorantMatch,
-} from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
+import type { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import {
     MatchId,
     ValorantMatchDetails,
 } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
-import { Match } from '@testing-library/dom';
 import {
     ValorantMatchId,
     ValorantPreGame,
@@ -118,6 +114,14 @@ export class ValorantMatchApiClient {
         queue: ValorantQueue,
         numberOfGames: number = 10
     ): Promise<ValorantCompetitiveUpdate> {
+        console.log(
+            'Fetching competitive updates for',
+            puuid,
+            'with queue',
+            queue,
+            'and endINdex',
+            numberOfGames
+        );
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_COMPETITIVE_UPDATES(puuid)
@@ -128,10 +132,6 @@ export class ValorantMatchApiClient {
                     startIndex: 0,
                     endIndex: numberOfGames,
                 },
-            },
-            {
-                cacheable: true,
-                expiration: 1800,
             }
         );
     }

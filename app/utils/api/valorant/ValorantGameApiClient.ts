@@ -16,6 +16,7 @@ import { RiotRequest } from '~/utils/request/url.server';
 import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { clientConfig } from '~/config/clientConfig';
 import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
+import * as url from 'url';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -52,6 +53,7 @@ export class ValorantGameApiClient {
         if (cacheConfig) {
             const cachedValue = await this.getCache(request.getUrl());
             if (cachedValue) {
+                console.log('Getting', request.getUrl());
                 return JSON.parse(cachedValue);
             }
         }
