@@ -15,6 +15,7 @@ import type { MatchHistory } from '~/routes';
 import { getMatchMap } from '~/utils/match/team.server';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { calculateWinrate } from '~/utils/calculation/winrate.server';
+import { ValorantSeason } from '~/models/interfaces/valorant-ingame/ValorantContent';
 
 export interface PlayerWithData extends Player {
     character?: ValorantMediaCharacter;
@@ -94,6 +95,8 @@ export async function getMatchHistory(
         })
     );
 }
+
+type StatsBySeason = ValorantSeason & { winrate: number };
 
 export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid: Puuid) {
     let topRank = 0;

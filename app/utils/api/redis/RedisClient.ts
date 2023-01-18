@@ -1,4 +1,5 @@
-import { createClient, RedisClientType } from 'redis';
+import type { RedisClientType } from 'redis';
+import { createClient } from 'redis';
 import process from 'process';
 
 export type CacheConfig = {
@@ -8,7 +9,6 @@ export type CacheConfig = {
 
 export class RedisClient {
     client: RedisClientType;
-
     async init() {
         const url = process.env.REDIS_DATABASE_URL;
         this.client = createClient({

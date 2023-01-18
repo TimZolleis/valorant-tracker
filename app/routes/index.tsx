@@ -7,7 +7,6 @@ import { useLoaderData } from '@remix-run/react';
 import ContentContainer from '~/components/common/Container';
 import type {
     ValorantCompetitiveUpdate,
-    ValorantMatch,
 } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
@@ -18,7 +17,7 @@ import type {
     ValorantMatchDetails,
 } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
 import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
-import { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
+import type { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 import {
     getCompetitiveUpdates,
     getCompetitiveStats,
@@ -31,10 +30,7 @@ type LoaderData = {
     competitiveUpdate: ValorantCompetitiveUpdate;
     matchHistory: MatchHistory[];
     competitiveTier: ValorantMediaCompetitiveTier;
-    playerStatistics: {
-        winRate: number;
-        seasonalInfo: number;
-    };
+    playerStatistics: Awaited<ReturnType<typeof getCompetitiveStats>>;
     error?: string;
 };
 
