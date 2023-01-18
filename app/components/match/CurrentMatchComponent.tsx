@@ -11,6 +11,7 @@ const CurrentMatchComponent = () => {
         }
 
         if (fetcher.data?.pregame || fetcher.data?.coregame) {
+            console.log(fetcher.data?.playersData);
             setHasGame(true);
         }
         if (fetcher.data?.error) {
@@ -21,7 +22,7 @@ const CurrentMatchComponent = () => {
     const [hasGame, setHasGame] = useState(false);
 
     if (hasGame) {
-        return <div>Lol Game going on</div>;
+        return <div className={'text-white'}>Lol Game going on</div>;
     } else {
         return <NoCurrentMatchComponent />;
     }

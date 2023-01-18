@@ -28,7 +28,6 @@ import { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
-    rank: PlayerRank;
     competitiveUpdate: ValorantCompetitiveUpdate;
     matchHistory: MatchHistory[];
     competitiveTier: ValorantMediaCompetitiveTier;
@@ -59,13 +58,18 @@ async function getMatchHistory(
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+    const startTime = new Date().getTime();
+    console.log('StartTime', startTime);
     const user = await requireUser(request);
-    const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
-    const rank = await getPlayerRank(user, user.puuid, activeSeason, competitiveTier);
-    const competitiveUpdate = await getCompetitiveUpdates(user);
-    const matchHistory = await getMatchHistory(user, QUEUE.COMPETITIVE);
 
-    return json<LoaderData>({ user, rank, competitiveUpdate, matchHistory, competitiveTier });
+    const [{ activeSeason, competitiveTier }, competitiveUpdate, matchHistory] = await Promise.all([
+        getCurrentCompetitiveTiers(user),
+        getCompetitiveUpdates(user, user.puuid, 20),
+        getMatchHistory(user, QUEUE.COMPETITIVE),
+    ]);
+    console.log('All fetched at', new Date().getTime() - startTime, 'ms');
+
+    return json<LoaderData>({ user, competitiveTier, competitiveUpdate, matchHistory });
 };
 
 function calculateRrDifference(matches: ValorantMatch[]) {
@@ -77,7 +81,7 @@ function calculateRrDifference(matches: ValorantMatch[]) {
 }
 
 export default function Index() {
-    const { matchHistory, rank, competitiveUpdate, competitiveTier } = useLoaderData<LoaderData>();
+    const { matchHistory, competitiveUpdate, competitiveTier } = useLoaderData<LoaderData>();
     const user = useOptionalUser();
     return (
         <>
@@ -87,7 +91,7 @@ export default function Index() {
                         <CurrentMatchComponent />
                     </ContentContainer>
                 </div>
-                <div className={'grid grid-cols-1 gap-5 md:grid-cols-2'}>
+                <div className={'grid grid-cols-1 gap-5 md:grid-cols-2 auto-rows-min items-start'}>
                     <ContentContainer>
                         <MatchHistoryComponent history={matchHistory} />
                     </ContentContainer>

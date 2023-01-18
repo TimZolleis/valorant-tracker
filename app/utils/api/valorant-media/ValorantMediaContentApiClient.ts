@@ -17,9 +17,6 @@ export class ValorantMediaContentApiClient {
 
     async getCurrentCompetitiveSeason(activeSeasonUuid: string) {
         const seasons = await this.getCompetitiveSeasons();
-        return seasons.find((competitiveSeason) => {
-            return competitiveSeason.seasonUuid === activeSeasonUuid;
-        });
     }
     async getCompetitiveTiers(
         competitiveSeason: ValorantMediaCompetitiveSeason
@@ -36,7 +33,6 @@ export class ValorantMediaContentApiClient {
             }
         );
     }
-
     async getMaps(): Promise<ValorantMediaMap[]> {
         return await this.client.get(MEDIA_CONTENT_ENDPOINTS.MAPS);
     }

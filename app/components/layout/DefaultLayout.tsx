@@ -5,7 +5,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
     return (
         <>
             <NavBar />
-            <main className={'p-10'}>{children}</main>
+            <main className={'p-5'}>{children}</main>
         </>
     );
 };

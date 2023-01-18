@@ -10,6 +10,7 @@ import {
     Tier,
     ValorantMediaCompetitiveTier,
 } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
+import { ValorantMediaCompetitiveSeason } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveSeason';
 
 export type PlayerRank = {
     tier?: Tier;
@@ -26,7 +27,7 @@ export async function getPlayerRank(
 ): Promise<PlayerRank> {
     const { unrated, gamesNeededForRating } = await checkGamesNeededForRating(activeSeason, user);
     const playerApi = new ValorantPlayerApiClient(user);
-    const mostRecentGame = await playerApi.getMostRecentGame(true);
+    const mostRecentGame = await playerApi.getMostRecentGame(true, puuid);
     const tier = competitiveTier.tiers.find((tier) => {
         return tier.tier === mostRecentGame.Matches[0].TierAfterUpdate;
     });
@@ -39,13 +40,23 @@ export async function getPlayerRank(
     };
 }
 
-export async function getCurrentCompetitiveTiers(user: AuthenticatedValorantUser) {
-    const activeSeason = await new ValorantContentApiClient()
-        .init(user)
-        .then((client) => client.getActiveSeason());
+function findCompetitiveSeason(
+    competitiveSeasons: ValorantMediaCompetitiveSeason[],
+    activeSeasonId: string
+) {
+    return competitiveSeasons.find((competitiveSeason) => {
+        return competitiveSeason.seasonUuid === activeSeasonId;
+    });
+}
 
-    const competitiveTier = await new ValorantMediaContentApiClient().getCurrentCompetitiveTiers(
-        activeSeason!
+export async function getCurrentCompetitiveTiers(user: AuthenticatedValorantUser) {
+    const [activeSeason, competitiveSeasons] = await Promise.all([
+        new ValorantContentApiClient().init(user).then((client) => client.getActiveSeason()),
+        new ValorantMediaContentApiClient().getCompetitiveSeasons(),
+    ]);
+    const competitiveSeason = findCompetitiveSeason(competitiveSeasons, activeSeason.act.ID);
+    const competitiveTier = await new ValorantMediaContentApiClient().getCompetitiveTiers(
+        competitiveSeason!
     );
 
     return { activeSeason, competitiveTier };

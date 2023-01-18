@@ -39,14 +39,14 @@ export const NoCurrentMatchComponent = () => {
             <div className={'flex w-full'}>
                 <span className={'p-3 rounded-xl ring ring-1 ring-gray-600'}>
                     <img
-                        className={'h-8 animate-pulse'}
+                        className={'h-6 animate-pulse'}
                         src='/resources/img/svg/crossed-circle.svg'
                         alt=''
                     />
                 </span>
             </div>
             <div className={'mt-5'}>
-                <p className={'font-inter text-title-large text-white font-bold'}>No Live Match</p>
+                <p className={'font-inter text-title-medium text-white font-bold'}>No Live Match</p>
                 <p className={'font-inter text-body-medium text-gray-400 font-normal'}>
                     Currently there is no live match detected. Rechecking in{' '}
                     <span className={'font-bold text-white'}>{remainingTime}</span>

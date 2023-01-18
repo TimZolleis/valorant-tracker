@@ -17,6 +17,7 @@ import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { clientConfig } from '~/config/clientConfig';
 import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
 import * as url from 'url';
+import { DateTime } from 'luxon';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -49,33 +50,41 @@ export class ValorantGameApiClient {
         });
     }
 
-    async get(request: RiotRequest, config?: AxiosRequestConfig<any>, cacheConfig?: CacheConfig) {
+    async get(
+        request: RiotRequest,
+        config?: AxiosRequestConfig<any>,
+        cacheConfig?: CacheConfig,
+        useFallback = false
+    ) {
         if (cacheConfig) {
             const cachedValue = await this.getCache(request.getUrl());
             if (cachedValue) {
-                console.log('Getting', request.getUrl());
                 return JSON.parse(cachedValue);
             }
         }
-        console.log('Fetchin from api', request.getUrl());
+        const url = useFallback ? request.getFallback().getUrl() : request.getUrl();
+        const startTime = new Date().getTime();
         const result = await this.axios
-            .get(request.getUrl(), config)
+            .get(url, config)
             .then((res) => res.data)
-            .catch((error) => {
+            .catch(async (error) => {
                 if (error.response?.status === 400) {
                     throw redirect('/reauth');
                 }
                 if (error.response?.status >= 500) {
-                    this.getFallback(request, config);
+                    if (!useFallback) {
+                        await this.get(request, config, cacheConfig, true);
+                    } else {
+                        throw new RiotServicesUnavailableException();
+                    }
                 } else {
                     throw new Error(error.message);
                 }
             });
         if (cacheConfig) {
-            console.log('Setting to cache');
             await this.setCache(request.getUrl(), JSON.stringify(result), cacheConfig);
         }
-
+        console.log('Got from Riot Api, took', new Date().getTime() - startTime);
         return result;
     }
 
@@ -96,39 +105,6 @@ export class ValorantGameApiClient {
             });
     }
 
-    async getFallback(
-        request: RiotRequest,
-        config?: AxiosRequestConfig<any>,
-        cacheConfig?: CacheConfig
-    ) {
-        const fallbackRequest = request.getFallback();
-        if (cacheConfig) {
-            const cachedValue = await this.getCache(request.getUrl());
-            if (cachedValue) {
-                return cachedValue;
-            }
-        }
-        const result = await this.axios
-            .get(fallbackRequest.getUrl(), config)
-            .then((res) => res.data)
-            .catch((error) => {
-                if (error.response?.status === 400) {
-                    throw redirect('/reauth');
-                }
-                if (error.response?.status >= 500) {
-                    this.getFallback(request, config);
-                } else {
-                    console.log(error);
-                    throw new Error(error.message);
-                }
-            });
-        if (cacheConfig) {
-            await this.setCache(request.getUrl(), JSON.stringify(result), cacheConfig);
-        }
-
-        return result;
-    }
-
     async postFallback(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
         const fallbackUrl = request.setRegion('na');
         return await this.axios
@@ -146,14 +122,29 @@ export class ValorantGameApiClient {
             });
     }
 
+    async put(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
+        return await this.axios
+            .put(request.getUrl(), body, config)
+            .then((res) => res.data)
+            .catch((error) => {
+                if (error.response?.status === 400) {
+                    throw redirect('/reauth');
+                }
+                throw new RiotServicesUnavailableException();
+            });
+    }
+
     private async getCache(url: string) {
         const client = await new RedisClient().init();
-        return await client.getValue(url);
+        const value = await client.getValue(url);
+        await client.disconnect();
+        return value;
     }
 
     private async setCache(url: string, value: string, cacheConfig: CacheConfig) {
         const client = await new RedisClient().init();
-        return await client.setValue(url, value, cacheConfig);
+        await client.setValue(url, value, cacheConfig);
+        await client.disconnect();
     }
 
     private getDefaultCacheConfig() {

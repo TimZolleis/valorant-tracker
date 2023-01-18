@@ -20,12 +20,13 @@ export class RedisClient {
 
     async setValue(url: string, value: string, cacheConfig: CacheConfig) {
         await this.client.setEx(url, cacheConfig.expiration, value);
-        this.client.disconnect();
     }
 
     async getValue(url: string) {
-        const result = await this.client.get(url);
-        this.client.disconnect();
-        return result;
+        return await this.client.get(url);
+    }
+
+    async disconnect() {
+        await this.client.disconnect();
     }
 }

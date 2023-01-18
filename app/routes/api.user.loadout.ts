@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         throw redirect('/login');
     }
     const loadout = await new ValorantPlayerApiClient(user).getLoadout();
-    const playerCard = await new PlayerMediaApi().fetchPlayerCard(loadout.Identity.PlayerCardID);
+    const playerCard = await new PlayerMediaApi().getPlayerCard(loadout.Identity.PlayerCardID);
     return json<LoadoutLoaderData>({
         loadout,
         playerCard,

@@ -75,7 +75,7 @@ export interface ValorantPreGame {
     EnemyTeamSize: number;
     EnemyTeamLockCount: number;
     PregameState: string;
-    LastUpdated: Date;
+    LastUpdated: string;
     MapID: string;
     MapSelectPool: any[];
     BannedMapIDs: any[];

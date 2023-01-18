@@ -1,5 +1,6 @@
 import { ValorantMediaApiClient } from '~/utils/api/valorant-media/ValorantMediaApiClient';
 import type { ValorantMediaPlayerCard } from '~/models/interfaces/valorant-media/ValorantMediaPlayerCard';
+import { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 
 export class PlayerMediaApi {
     client: ValorantMediaApiClient;
@@ -8,7 +9,7 @@ export class PlayerMediaApi {
         this.client = new ValorantMediaApiClient();
     }
 
-    async fetchPlayerCard(cardUuid: string): Promise<ValorantMediaPlayerCard> {
+    async getPlayerCard(cardUuid: string): Promise<ValorantMediaPlayerCard> {
         return await this.client.get(MEDIA_PLAYER_ENDPOINTS.PLAYERCARD(cardUuid));
     }
 }
