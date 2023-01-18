@@ -20,7 +20,7 @@ interface SeasonalBadgeInfo {
     LeaderboardRank: number;
 }
 
-export interface Player {
+export type Player = {
     Subject: string;
     CharacterID: string;
     CharacterSelectionState: string;
@@ -29,7 +29,7 @@ export interface Player {
     PlayerIdentity: PlayerIdentity;
     SeasonalBadgeInfo: SeasonalBadgeInfo;
     IsCaptain: boolean;
-}
+};
 
 interface Team {
     TeamID: string;

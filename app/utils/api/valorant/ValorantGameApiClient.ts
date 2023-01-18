@@ -57,8 +57,11 @@ export class ValorantGameApiClient {
         useFallback = false
     ) {
         if (cacheConfig) {
-            const cachedValue = await this.getCache(request.getUrl());
+            const cachedValue = await this.getCache(request.getEndpoint());
             if (cachedValue) {
+                if (request.getUrl().includes('competitive')) {
+                    console.log(JSON.parse(cachedValue));
+                }
                 return JSON.parse(cachedValue);
             }
         }
@@ -82,7 +85,7 @@ export class ValorantGameApiClient {
                 }
             });
         if (cacheConfig) {
-            await this.setCache(request.getUrl(), JSON.stringify(result), cacheConfig);
+            await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
         }
         console.log('Got from Riot Api, took', new Date().getTime() - startTime);
         return result;

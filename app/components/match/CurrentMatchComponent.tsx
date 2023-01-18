@@ -11,7 +11,7 @@ const CurrentMatchComponent = () => {
         }
 
         if (fetcher.data?.pregame || fetcher.data?.coregame) {
-            console.log(fetcher.data?.playersData);
+            console.log(fetcher.data?.pregame);
             setHasGame(true);
         }
         if (fetcher.data?.error) {

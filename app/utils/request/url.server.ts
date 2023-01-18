@@ -42,4 +42,8 @@ export class RiotRequest {
     getUrl() {
         return `${this.endpoint.getEndpoint()}/${this.url}`;
     }
+
+    getEndpoint() {
+        return `/${this.url}`;
+    }
 }

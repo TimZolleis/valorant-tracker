@@ -132,6 +132,10 @@ export class ValorantMatchApiClient {
                     startIndex: 0,
                     endIndex: numberOfGames,
                 },
+            },
+            {
+                cacheable: true,
+                expiration: 900,
             }
         );
     }

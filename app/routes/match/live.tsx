@@ -7,8 +7,9 @@ import type { Player, ValorantPreGame } from '~/models/interfaces/valorant-ingam
 import type { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
 import { ValorantMediaCharacterApi } from '~/utils/api/valorant-media/ValorantMediaCharacterApi';
 import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
-import { getPlayersData, PlayerData } from '~/utils/player/player.server';
+import { getPlayersData, PlayerWithData } from '~/utils/player/player.server';
 import { TEST_MATCH } from '~/config/clientConfig';
+import { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 
 async function getPregameMatch(user: AuthenticatedValorantUser) {
     const client = new ValorantMatchApiClient(user);
@@ -23,11 +24,17 @@ async function getCoregameMatch(user: AuthenticatedValorantUser) {
 }
 
 export type LiveMatchLoaderData = {
-    pregame?: ValorantPreGame;
-    playersData?: PlayerData[];
+    pregame?: PregameWithData;
     coregame?: ValorantCoreGame;
     error?: string;
 };
+
+interface PregameWithData extends ValorantPreGame {
+    AllyTeam: {
+        TeamID: string;
+        Players: PlayerWithData[];
+    };
+}
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const user = await requireUser(request);
@@ -37,9 +44,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         const pregame = TEST_MATCH;
         const players = pregame.AllyTeam.Players;
         const playersData = await getPlayersData(user, players);
+        const pregameWithData = {
+            ...pregame,
+            AllyTeam: {
+                ...pregame.AllyTeam,
+                Players: playersData,
+            },
+        };
         return json<LiveMatchLoaderData>({
-            pregame: pregame,
-            playersData: playersData,
+            pregame: pregameWithData,
         });
     } catch (exception: any) {
         error = exception.message;

@@ -10,9 +10,3 @@ export function determinePlayerTeam(puuid: Puuid, matchDetails: ValorantMatchDet
         return team.teamId === teamId;
     });
 }
-export async function getMatchMap(matchDetails: ValorantMatchDetails) {
-    const maps = await new ValorantMediaContentApiClient().getMaps();
-    return maps.find((map) => {
-        return map.mapUrl === matchDetails.matchInfo.mapId;
-    });
-}
