@@ -17,10 +17,7 @@ export class ValorantContentApiClient {
     client: ValorantGameApiClient;
 
     async init(user: AuthenticatedValorantUser) {
-        const config = await new RiotApiClientConfig(
-            clientConfig.clientPlatform,
-            clientConfig.clientVersion
-        );
+        const config = await new RiotApiClientConfig().init();
         this.client = await new ValorantGameApiClient(user, config.getHeaders());
         return this;
     }
@@ -28,9 +25,14 @@ export class ValorantContentApiClient {
     async getContent(): Promise<ValorantContent> {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildSharedUrl(CONTENT_ENDPOINTS.CONTENT),
-            {}
+            {},
+            {
+                key: 'content',
+                expiration: 3600,
+            }
         );
     }
+
     async getActiveSeason(): Promise<ActiveSeason> {
         const content = await this.getContent();
         const episodes = content.Seasons.filter((season) => {

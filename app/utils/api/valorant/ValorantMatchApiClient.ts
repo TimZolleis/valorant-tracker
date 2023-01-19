@@ -42,7 +42,7 @@ export class ValorantMatchApiClient {
                 },
             },
             {
-                cacheable: true,
+                key: 'matchhistory',
                 expiration: 3600,
             }
         );
@@ -55,7 +55,7 @@ export class ValorantMatchApiClient {
             ),
             {},
             {
-                cacheable: true,
+                key: 'matchdetails',
                 expiration: 3600 * 12,
             }
         );
@@ -126,7 +126,7 @@ export class ValorantMatchApiClient {
                 },
             },
             {
-                cacheable: true,
+                key: 'competitiveupdate',
                 expiration: 900,
             }
         );

@@ -3,14 +3,10 @@ import { json } from '@remix-run/node';
 import { requireUser } from '~/utils/session/session.server';
 import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiClient';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
-import type { Player, ValorantPreGame } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import type { ValorantPreGame } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import type { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
-import { ValorantMediaCharacterApi } from '~/utils/api/valorant-media/ValorantMediaCharacterApi';
-import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
 import { getPlayersData, PlayerWithData } from '~/utils/player/player.server';
 import { TEST_MATCH } from '~/config/clientConfig';
-import { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
-import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { getMatchMap } from '~/utils/match/match.server';
 import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
 
@@ -45,8 +41,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     try {
         const pregame = TEST_MATCH;
         const players = pregame.AllyTeam.Players;
-        const playersData = await getPlayersData(user, players);
-        const map = await getMatchMap(pregame.MapID);
+        const [playersData, map] = await Promise.all([
+            getPlayersData(user, players),
+            getMatchMap(pregame.MapID),
+        ]);
         const pregameWithData = {
             ...pregame,
             AllyTeam: {
@@ -55,12 +53,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
             },
             Map: map,
         };
-        console.log('Pre Game found!');
         return json<LiveMatchLoaderData>({
             pregame: pregameWithData,
         });
     } catch (exception: any) {
-        console.log('error', exception.message);
+        console.log('error', exception);
         error = exception.message;
     }
     try {

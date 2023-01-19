@@ -43,11 +43,9 @@ export class RiotReauthenticationClient {
                 return parseTokenData(response.request.res.responseUrl);
             })
             .catch((error) => {
-                console.log('Error with ATOKEN');
                 try {
                     return parseTokenData(error.response.request.res.responseUrl);
                 } catch (error) {
-                    console.log('big error, redirecting');
                     throw redirect('/login');
                 }
             });
@@ -67,10 +65,8 @@ export class RiotReauthenticationClient {
     }
 
     async reauthenticate() {
-        console.log('Reauth started');
         const { accessToken } = await this.requestAccessToken();
         const entitlement = await this.requestEntitlementsToken(accessToken);
-        console.log('Token obtained', accessToken);
         const reauthenticationCookies = await new ReauthenticationCookies().init(this.jar);
         this.user.accessToken = accessToken;
         this.user.entitlement = entitlement;
@@ -78,7 +74,7 @@ export class RiotReauthenticationClient {
         return this.user;
     }
 
-    async refreshLoginSession(request: Request, redirectUrl: string) {
-        return await updateSession(request, this.user, redirectUrl);
+    async refreshLoginSession(request: Request) {
+        return await updateSession(request, this.user);
     }
 }

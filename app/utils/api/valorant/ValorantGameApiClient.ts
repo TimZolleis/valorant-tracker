@@ -18,6 +18,7 @@ import { clientConfig } from '~/config/clientConfig';
 import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
 import * as url from 'url';
 import { DateTime } from 'luxon';
+import { ROUTES } from '~/config/Routes';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -54,20 +55,18 @@ export class ValorantGameApiClient {
         request: RiotRequest,
         config?: AxiosRequestConfig<any>,
         cacheConfig?: CacheConfig,
-        useFallback = false
+        isFallback = false
     ) {
         if (cacheConfig) {
-            const cachedValue = await this.getCache(request.getEndpoint());
+            const cachedValue = await this.getCache(request.getEndpoint(), cacheConfig);
             if (cachedValue) {
                 return JSON.parse(cachedValue);
             }
         }
-        const url = useFallback ? request.getFallback().getUrl() : request.getUrl();
-
+        const url = isFallback ? request.getFallback().getUrl() : request.getUrl();
         const result = await this.axios
             .get(url, config)
             .then((res) => {
-                // console.log(res);
                 return res.data;
             })
             .catch(async (error) => {
@@ -75,53 +74,42 @@ export class ValorantGameApiClient {
                     throw redirect('/reauth');
                 }
                 if (error.response?.status >= 500) {
-                    if (!useFallback) {
-                        // await this.get(request, config, cacheConfig, true);
+                    if (!isFallback) {
+                        await this.get(request, config, cacheConfig, true);
                     } else {
                         throw new RiotServicesUnavailableException();
                     }
-                } else {
-                    throw new Error(error.message);
                 }
+                throw new Error(error.message);
             });
-
         if (cacheConfig) {
             await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
         }
         return result;
     }
 
-    async post(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
+    async post(
+        request: RiotRequest,
+        body: Object,
+        config?: AxiosRequestConfig<any>,
+        isFallback: boolean = true
+    ) {
+        const url = isFallback ? request.getFallback().getUrl() : request.getUrl();
         return await this.axios
-            .post(request.getUrl(), body)
+            .post(url, body)
             .then((res) => res.data)
             .catch((error) => {
                 if (error.response?.status === 400) {
-                    throw redirect('/reauth');
+                    throw redirect(ROUTES.REAUTH);
                 }
-
                 if (error.response?.status >= 500) {
-                    this.postFallback(request, body, config);
+                    if (!isFallback) {
+                        this.post(request, body, config, true);
+                    }
+                    throw new RiotServicesUnavailableException();
                 } else {
                     throw new Error(error.message);
                 }
-            });
-    }
-
-    async postFallback(request: RiotRequest, body: Object, config?: AxiosRequestConfig<any>) {
-        const fallbackUrl = request.setRegion('na');
-        return await this.axios
-            .post(fallbackUrl.getUrl(), body, config)
-            .then((res) => res.data)
-            .catch((error) => {
-                if (error.response?.status === 400) {
-                    throw redirect('/reauth');
-                }
-
-                if (error.response?.status >= 500) {
-                    this.postFallback(request, body, config);
-                }
-                throw new RiotServicesUnavailableException();
             });
     }
 
@@ -131,15 +119,15 @@ export class ValorantGameApiClient {
             .then((res) => res.data)
             .catch((error) => {
                 if (error.response?.status === 400) {
-                    throw redirect('/reauth');
+                    throw redirect(ROUTES.REAUTH);
                 }
                 throw new RiotServicesUnavailableException();
             });
     }
 
-    private async getCache(url: string) {
+    private async getCache(url: string, cacheConfig: CacheConfig) {
         const client = await new RedisClient().init();
-        const value = await client.getValue(url);
+        const value = await client.getValue(url, cacheConfig);
         await client.disconnect();
         return value;
     }
@@ -148,12 +136,5 @@ export class ValorantGameApiClient {
         const client = await new RedisClient().init();
         await client.setValue(url, value, cacheConfig);
         await client.disconnect();
-    }
-
-    private getDefaultCacheConfig() {
-        return {
-            cacheable: false,
-            expiration: 3600,
-        };
     }
 }

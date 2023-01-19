@@ -1,6 +1,6 @@
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
-import { RedisClient } from '~/utils/api/redis/RedisClient';
+import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
 
 export class ValorantMediaApiClient {
     axios: AxiosInstance;
@@ -22,7 +22,6 @@ export class ValorantMediaApiClient {
             console.log('Got from media cache, took', new Date().getTime() - startTime, 'ms');
             return JSON.parse(cached);
         }
-        console.log('Fetching from media api', url);
         const result = await this.axios.get(url).then((res) => this.parseMediaResponse(res));
         await this.setCache(url, JSON.stringify(result));
         console.log('Got from media api', url, 'took', new Date().getTime() - startTime, 'ms');
@@ -31,23 +30,26 @@ export class ValorantMediaApiClient {
 
     private async getCache(url: string) {
         const client = await new RedisClient().init();
-        const value = await client.getValue(url);
+        const value = await client.getValue(url, this.getDefaultCacheConfig());
         await client.disconnect();
         return value;
     }
 
     private async setCache(url: string, value: string) {
-        const cacheConfig = {
-            cacheable: true,
-            expiration: 3600,
-        };
         const client = await new RedisClient().init();
-        await client.setValue(url, value, cacheConfig);
+        await client.setValue(url, value, this.getDefaultCacheConfig());
         await client.disconnect();
     }
 
     parseMediaResponse(response: AxiosResponse) {
         return response.data.data;
+    }
+
+    private getDefaultCacheConfig(): CacheConfig {
+        return {
+            key: '',
+            expiration: 3600,
+        };
     }
 }
 
