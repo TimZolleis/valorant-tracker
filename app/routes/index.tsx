@@ -17,7 +17,7 @@ import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/Valora
 import type { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 import {
     getCompetitiveUpdates,
-    getCompetitiveStats,
+    getPlayerStatistics,
     getMatchHistory,
 } from '~/utils/player/player.server';
 import { useOptionalUser } from '~/utils/hooks/matches';
@@ -29,7 +29,7 @@ type LoaderData = {
     competitiveUpdate: ValorantCompetitiveUpdate;
     matchHistory: MatchHistory[];
     competitiveTier: ValorantMediaCompetitiveTier;
-    playerStatistics: Awaited<ReturnType<typeof getCompetitiveStats>>;
+    playerStatistics: Awaited<ReturnType<typeof getPlayerStatistics>>;
     error?: string;
 };
 
@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             getCurrentCompetitiveTiers(user),
             getCompetitiveUpdates(user, user.puuid, 20),
             getMatchHistory(user, QUEUE.COMPETITIVE),
-            getCompetitiveStats(user, user.puuid),
+            getPlayerStatistics(user, user.puuid),
         ]);
     console.log('All fetched at', new Date().getTime() - startTime, 'ms');
 

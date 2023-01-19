@@ -101,11 +101,11 @@ export async function getMatchHistory(user: AuthenticatedValorantUser, queue: Va
 
 type StatsBySeason = ValorantSeason & { winrate: number };
 
-export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid: Puuid) {
+export async function getPlayerStatistics(user: AuthenticatedValorantUser, puuid: Puuid) {
     const mmr = await new ValorantPlayerApiClient(user).getMMR();
     const competitiveSeasonIds = Object.keys(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
     const topTier = getTopTier(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
-    const statsBySeason = await Promise.all(
+    const seasonalInfo = await Promise.all(
         competitiveSeasonIds.map(async (competitiveSeasonId) => {
             const seasonalInfo =
                 mmr.QueueSkills.competitive.SeasonalInfoBySeasonID[competitiveSeasonId];
@@ -116,7 +116,6 @@ export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid
                 seasonalInfo.NumberOfWins,
                 seasonalInfo.NumberOfGames
             );
-
             return {
                 ...seasonalInfo,
                 seasonalWinRate,
@@ -124,10 +123,11 @@ export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid
             };
         })
     );
-    const totalWinrate = getTotalWinrate(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
+    const totalWinRate = getTotalWinrate(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
     return {
-        winrate: totalWinrate,
-        seasonalInfo: statsBySeason,
+        totalWinRate,
+        topTier,
+        seasonalInfo,
     };
 }
 

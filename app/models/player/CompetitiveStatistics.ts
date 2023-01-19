@@ -4,20 +4,25 @@ import { ValorantSeasonalInfo } from '~/models/interfaces/valorant-ingame/Valora
 import { ValorantMediaSeason } from '~/models/interfaces/valorant-media/ValorantMediaSeason';
 
 export class CompetitiveStatistics {
-    topRank: number;
+    topTier: number;
+    winRate: number;
     competitiveUpdate: ValorantCompetitiveUpdate;
-    rank: PlayerRank;
-    seasonalInfo: ValorantSeasonalInfo & { winRate: number } & { season: ValorantMediaSeason };
+    tier: PlayerRank;
+    seasonalInfo: ValorantSeasonalInfo & { seasonalWinRate: number } & {
+            season: ValorantMediaSeason;
+        }[];
 
     constructor(
-        topRank: number,
+        topTier: number,
         competitiveUpdate: ValorantCompetitiveUpdate,
-        rank: PlayerRank,
-        seasonalInfo: ValorantSeasonalInfo & { winRate: number } & { season: ValorantMediaSeason }
+        tier: PlayerRank,
+        seasonalInfo: ValorantSeasonalInfo & { seasonalWinRate: number } & {
+                season: ValorantMediaSeason;
+            }[]
     ) {
-        this.topRank = topRank;
+        this.topTier = topTier;
         this.competitiveUpdate = competitiveUpdate;
-        this.rank = rank;
+        this.tier = tier;
         this.seasonalInfo = seasonalInfo;
     }
 }
