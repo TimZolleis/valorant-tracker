@@ -122,7 +122,7 @@ export class ValorantMatchApiClient {
             'and endINdex',
             numberOfGames
         );
-        return await this.client.get(
+        const result = await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_COMPETITIVE_UPDATES(puuid)
             ),
@@ -138,6 +138,8 @@ export class ValorantMatchApiClient {
                 expiration: 900,
             }
         );
+
+        return result;
     }
 }
 

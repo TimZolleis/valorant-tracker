@@ -6,6 +6,7 @@ import type {
     ValorantContent,
     ValorantSeason,
 } from '~/models/interfaces/valorant-ingame/ValorantContent';
+import { clientConfig } from '~/config/clientConfig';
 
 export type ActiveSeason = {
     act: ValorantSeason;
@@ -16,7 +17,10 @@ export class ValorantContentApiClient {
     client: ValorantGameApiClient;
 
     async init(user: AuthenticatedValorantUser) {
-        const config = await new RiotApiClientConfig().init();
+        const config = await new RiotApiClientConfig(
+            clientConfig.clientPlatform,
+            clientConfig.clientVersion
+        );
         this.client = await new ValorantGameApiClient(user, config.getHeaders());
         return this;
     }

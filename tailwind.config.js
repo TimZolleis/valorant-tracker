@@ -32,5 +32,17 @@ module.exports = {
             },
         },
     },
+    safelist: [
+        'bg-red-800/20',
+        'bg-red-800',
+        'bg-green-800/20',
+        'bg-green-800',
+        'bg-indigo-800/20',
+        'bg-indigo-800',
+        'bg-rose-800/20',
+        'bg-rose-800',
+        'bg-fuchsia-800/20',
+        'bg-fuchsia-800',
+    ],
     plugins: [],
 };

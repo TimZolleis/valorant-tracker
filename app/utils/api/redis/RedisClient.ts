@@ -1,6 +1,7 @@
 import type { RedisClientType } from 'redis';
 import { createClient } from 'redis';
 import process from 'process';
+import fs from 'fs';
 
 export type CacheConfig = {
     cacheable: boolean;
@@ -19,6 +20,17 @@ export class RedisClient {
     }
 
     async setValue(url: string, value: string, cacheConfig: CacheConfig) {
+        const fs = require('fs');
+        fs.writeFile(
+            `C:\\Users\\tim\\IdeaProjects\\valorant-tracker\\tmp\\cached-${new Date().getTime()}.txt`,
+            value,
+            function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log('The file was saved!');
+            }
+        );
         await this.client.setEx(url, cacheConfig.expiration, value);
     }
 

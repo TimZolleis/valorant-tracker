@@ -1,6 +1,6 @@
 import { ValorantMediaCharacterApi } from '~/utils/api/valorant-media/ValorantMediaCharacterApi';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
-import type { Player } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import type { Player, PlayerIdentity } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
 import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import type { PlayerRank } from '~/utils/player/rank.server';
@@ -16,10 +16,12 @@ import { getMatchMap } from '~/utils/match/team.server';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { calculateWinrate } from '~/utils/calculation/winrate.server';
 import { ValorantSeason } from '~/models/interfaces/valorant-ingame/ValorantContent';
+import { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
 
 export interface PlayerWithData extends Player {
     character?: ValorantMediaCharacter;
     rank: PlayerRank;
+    PlayerIdentity: PlayerIdentity & { nameService: ValorantNameService };
     competitiveUpdate: ValorantCompetitiveUpdate;
 }
 
@@ -62,7 +64,7 @@ export async function getPlayersData(
             const [{ character, nameService }, rank, competitiveUpdate] = await Promise.all([
                 getPlayerData(user, player),
                 getPlayerRank(user, player.Subject, activeSeason, competitiveTier),
-                getCompetitiveUpdates(user, player.Subject, 10),
+                getCompetitiveUpdates(user, player.Subject, 19),
             ]);
             return {
                 ...player,
@@ -78,10 +80,7 @@ export async function getPlayersData(
     );
 }
 
-export async function getMatchHistory(
-    user: AuthenticatedValorantUser,
-    queue: ValorantQueue
-): Promise<MatchHistory[]> {
+export async function getMatchHistory(user: AuthenticatedValorantUser, queue: ValorantQueue) {
     const client = new ValorantMatchApiClient(user);
     const matches = await client
         .getMatchHistory(user.puuid, queue, 5)

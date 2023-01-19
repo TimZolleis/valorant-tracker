@@ -2,7 +2,7 @@ import { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 
 export type MatchId = string;
 
-interface PlayerIdentity {
+export interface PlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -57,7 +57,7 @@ interface AllyPlayer {
     IsCaptain: boolean;
 }
 
-interface AllyTeam {
+export interface AllyTeam {
     TeamID: string;
     Players: AllyPlayer[];
 }

@@ -56,7 +56,6 @@ function findCompetitiveSeason(
         return competitiveSeason.seasonUuid === activeSeasonId;
     });
 }
-
 export async function getCurrentCompetitiveTiers(user: AuthenticatedValorantUser) {
     try {
         const [activeSeason, competitiveSeasons] = await Promise.all([

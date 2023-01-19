@@ -10,6 +10,9 @@ import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiC
 import { getPlayersData, PlayerWithData } from '~/utils/player/player.server';
 import { TEST_MATCH } from '~/config/clientConfig';
 import { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
+import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
+import { getMatchMap } from '~/utils/match/match.server';
+import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
 
 async function getPregameMatch(user: AuthenticatedValorantUser) {
     const client = new ValorantMatchApiClient(user);
@@ -24,17 +27,17 @@ async function getCoregameMatch(user: AuthenticatedValorantUser) {
 }
 
 export type LiveMatchLoaderData = {
-    pregame?: PregameWithData;
+    pregame?: ValorantPreGameWithDetails;
     coregame?: ValorantCoreGame;
     error?: string;
 };
 
-interface PregameWithData extends ValorantPreGame {
+export type ValorantPreGameWithDetails = ValorantPreGame & {
     AllyTeam: {
         TeamID: string;
         Players: PlayerWithData[];
     };
-}
+} & { Map?: ValorantMediaMap };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const user = await requireUser(request);
@@ -43,13 +46,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         // const pregame = await getPregameMatch(user);
         const pregame = TEST_MATCH;
         const players = pregame.AllyTeam.Players;
-        const playersData = await getPlayersData(user, players);
+        const [playersData, map] = await Promise.all([
+            getPlayersData(user, players),
+            getMatchMap(pregame.MapID),
+        ]);
         const pregameWithData = {
             ...pregame,
             AllyTeam: {
                 ...pregame.AllyTeam,
                 Players: playersData,
             },
+            Map: map,
         };
         return json<LiveMatchLoaderData>({
             pregame: pregameWithData,

@@ -59,9 +59,6 @@ export class ValorantGameApiClient {
         if (cacheConfig) {
             const cachedValue = await this.getCache(request.getEndpoint());
             if (cachedValue) {
-                if (request.getUrl().includes('competitive')) {
-                    console.log(JSON.parse(cachedValue));
-                }
                 return JSON.parse(cachedValue);
             }
         }
@@ -78,6 +75,7 @@ export class ValorantGameApiClient {
                     if (!useFallback) {
                         await this.get(request, config, cacheConfig, true);
                     } else {
+                        console.log(error, url);
                         throw new RiotServicesUnavailableException();
                     }
                 } else {
@@ -85,6 +83,7 @@ export class ValorantGameApiClient {
                 }
             });
         if (cacheConfig) {
+            console.log('Setting to cache', request.getUrl());
             await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
         }
         console.log('Got from Riot Api, took', new Date().getTime() - startTime);
@@ -145,6 +144,7 @@ export class ValorantGameApiClient {
     }
 
     private async setCache(url: string, value: string, cacheConfig: CacheConfig) {
+        console.log('Setting to cache', url);
         const client = await new RedisClient().init();
         await client.setValue(url, value, cacheConfig);
         await client.disconnect();

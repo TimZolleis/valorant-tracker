@@ -5,9 +5,7 @@ import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValor
 import { getCurrentCompetitiveTiers } from '~/utils/player/rank.server';
 import { useLoaderData } from '@remix-run/react';
 import ContentContainer from '~/components/common/Container';
-import type {
-    ValorantCompetitiveUpdate,
-} from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
+import type { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
 import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
@@ -67,14 +65,14 @@ export default function Index() {
     const user = useOptionalUser();
     return (
         <>
-            <p className={' text-white font-inter font-bold text-headline-large'}>Dashboard</p>
+            <p className={' text-white font-inter font-bold text-headline-large py-3'}>Dashboard</p>
             <div className={'space-y-5'}>
                 <div className={'flex gap-2 w-full'}>
                     <ContentContainer>
                         <CurrentMatchComponent />
                     </ContentContainer>
                 </div>
-                <div className={'grid grid-cols-1 gap-5 md:grid-cols-2 auto-rows-min items-start'}>
+                <div className={'grid grid-cols-1 gap-5 lg:grid-cols-3 auto-rows-min items-start'}>
                     <ContentContainer>
                         <MatchHistoryComponent history={matchHistory} />
                     </ContentContainer>

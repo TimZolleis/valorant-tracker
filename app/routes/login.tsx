@@ -36,17 +36,17 @@ const LoginPage = () => {
     return (
         <>
             <Form method={'post'} className={'flex flex-col w-full items-center mt-5'}>
-                <div className={'w-6/12 ring ring-1 ring-gray-600 rounded-xl p-10'}>
+                <div className={' md:w-6/12 ring ring-1 ring-gray-600 rounded-xl p-10'}>
                     <h2
                         className={
-                            'text-center font-inter font-semibold text-headline-large text-white'
+                            'text-center font-inter font-bold text-headline-medium text-white'
                         }>
                         Login
                     </h2>
-                    <p className={'font-inter text-gray-300 text-center'}>
+                    <p className={'font-inter text-label-medium text-gray-400 text-center'}>
                         Please login with your Riot Games credentials
                     </p>
-                    <div className={'mt-5 space-y-2'}>
+                    <div className={'mt-5 space-y-5'}>
                         <TextInput label={'Username'} id={'username'} />
                         <PasswordInput label={'Password'} id={'password'} />
                         <FormError text={actionData?.error} />
