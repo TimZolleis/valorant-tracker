@@ -114,14 +114,6 @@ export class ValorantMatchApiClient {
         queue: ValorantQueue,
         numberOfGames: number = 10
     ): Promise<ValorantCompetitiveUpdate> {
-        console.log(
-            'Fetching competitive updates for',
-            puuid,
-            'with queue',
-            queue,
-            'and endINdex',
-            numberOfGames
-        );
         const result = await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_COMPETITIVE_UPDATES(puuid)

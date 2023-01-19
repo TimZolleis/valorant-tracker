@@ -64,6 +64,7 @@ export class ValorantGameApiClient {
         }
         const url = useFallback ? request.getFallback().getUrl() : request.getUrl();
         const startTime = new Date().getTime();
+        console.log('Fetching', request.getUrl());
         const result = await this.axios
             .get(url, config)
             .then((res) => res.data)
@@ -73,7 +74,7 @@ export class ValorantGameApiClient {
                 }
                 if (error.response?.status >= 500) {
                     if (!useFallback) {
-                        await this.get(request, config, cacheConfig, true);
+                        // await this.get(request, config, cacheConfig, true);
                     } else {
                         console.log(error, url);
                         throw new RiotServicesUnavailableException();
@@ -83,7 +84,7 @@ export class ValorantGameApiClient {
                 }
             });
         if (cacheConfig) {
-            console.log('Setting to cache', request.getUrl());
+            console.log('Got result', JSON.stringify(result).length);
             await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
         }
         console.log('Got from Riot Api, took', new Date().getTime() - startTime);

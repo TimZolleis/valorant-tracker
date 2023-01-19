@@ -35,6 +35,7 @@ export async function getCompetitiveUpdates(
     numberOfGames?: number
 ) {
     const matchApi = new ValorantMatchApiClient(user);
+    console.log('Fetching comp updates for', puuid);
     return await matchApi.getCompetitiveUpdates(
         puuid ? puuid : user.puuid,
         QUEUE.COMPETITIVE,
