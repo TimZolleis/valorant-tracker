@@ -1,4 +1,4 @@
-import { Player } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import { ValorantPlayer } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { PlayerWithData } from '~/utils/player/player.server';
 import { PlayerRankComponent } from '~/components/match/current/team/player/PlayerRankComponent';
 import { PlayerRankDirectionComponent } from '~/components/match/current/team/player/PlayerRankDirectionComponent';

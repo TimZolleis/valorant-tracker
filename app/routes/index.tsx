@@ -10,7 +10,7 @@ import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryCo
 import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
 import { QUEUE } from '~/models/static/Queue';
 import type {
-    Team,
+    ValorantTeam,
     ValorantMatchDetails,
 } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
 import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
@@ -36,12 +36,11 @@ type LoaderData = {
 export type MatchHistory = {
     matchDetails: ValorantMatchDetails;
     map?: ValorantMediaMap;
-    playerTeam?: Team;
+    playerTeam?: ValorantTeam;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
     const startTime = new Date().getTime();
-    console.log('StartTime', startTime);
     const user = await requireUser(request);
     const [{ activeSeason, competitiveTier }, competitiveUpdate, matchHistory, playerStatistics] =
         await Promise.all([

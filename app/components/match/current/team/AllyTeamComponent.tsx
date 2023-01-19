@@ -1,9 +1,12 @@
-import { AllyTeam, Player } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import {
+    ValorantAllyTeam,
+    ValorantPlayer,
+} from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { PlayerComponent } from '~/components/match/current/team/PlayerComponent';
 import { PlayerWithData } from '~/utils/player/player.server';
 import { useEffect } from 'react';
 
-interface AllyTeamWithData extends AllyTeam {
+interface AllyTeamWithData extends ValorantAllyTeam {
     Players: PlayerWithData[];
 }
 

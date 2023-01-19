@@ -4,7 +4,7 @@ interface PartyRRPenalties {
     [key: string]: number;
 }
 
-interface MatchInfo {
+interface ValorantMatchInfo {
     matchId: string;
     mapId: string;
     gamePodId: string;
@@ -28,37 +28,37 @@ interface MatchInfo {
     shouldMatchDisablePenalties: boolean;
 }
 
-interface PlatformInfo {
+interface ValorantPlatformInfo {
     platformType: string;
     platformOS: string;
     platformOSVersion: string;
     platformChipset: string;
 }
 
-interface AbilityCasts {
+interface ValorantAbilityCasts {
     grenadeCasts: number;
     ability1Casts: number;
     ability2Casts: number;
     ultimateCasts: number;
 }
 
-interface Stats {
+interface ValorantStats {
     score: number;
     roundsPlayed: number;
     kills: number;
     deaths: number;
     assists: number;
     playtimeMillis: number;
-    abilityCasts: AbilityCasts;
+    abilityCasts: ValorantAbilityCasts;
 }
 
-interface RoundDamage {
+interface ValorantRoundDamage {
     round: number;
     receiver: string;
     damage: number;
 }
 
-interface BehaviorFactors {
+interface ValorantBehaviorFactors {
     afkRounds: number;
     collisions: number;
     damageParticipationOutgoing: number;
@@ -68,17 +68,17 @@ interface BehaviorFactors {
     stayedInSpawnRounds: number;
 }
 
-interface BasicMovement {
+interface ValorantBasicMovement {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
 }
 
-interface BasicGunSkill {
+interface ValorantBasicGunSkill {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
 }
 
-interface AdaptiveBots {
+interface ValorantAdaptiveBots {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
     adaptiveBotAverageDurationMillisAllAttempts: number;
@@ -86,64 +86,64 @@ interface AdaptiveBots {
     killDetailsFirstAttempt?: any;
 }
 
-interface Ability {
+interface ValorantAbility {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
 }
 
-interface BombPlant {
+interface ValorantBombPlant {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
 }
 
-interface DefendBombSite {
+interface ValorantDefendBombSite {
     idleTimeMillis: number;
     objectiveCompleteTimeMillis: number;
     success: boolean;
 }
 
-interface SettingStatus {
+interface ValorantSettingStatus {
     isMouseSensitivityDefault: boolean;
     isCrosshairDefault: boolean;
 }
 
-interface NewPlayerExperienceDetails {
-    basicMovement: BasicMovement;
-    basicGunSkill: BasicGunSkill;
-    adaptiveBots: AdaptiveBots;
-    ability: Ability;
-    bombPlant: BombPlant;
-    defendBombSite: DefendBombSite;
-    settingStatus: SettingStatus;
+interface ValorantNewPlayerExperienceDetails {
+    basicMovement: ValorantBasicMovement;
+    basicGunSkill: ValorantBasicGunSkill;
+    adaptiveBots: ValorantAdaptiveBots;
+    ability: ValorantAbility;
+    bombPlant: ValorantBombPlant;
+    defendBombSite: ValorantDefendBombSite;
+    settingStatus: ValorantSettingStatus;
 }
 
-interface XpModification {
+interface ValorantXpModification {
     Value: number;
     ID: string;
 }
 
-interface Player {
+interface ValorantPlayer {
     subject: string;
     gameName: string;
     tagLine: string;
-    platformInfo: PlatformInfo;
+    platformInfo: ValorantPlatformInfo;
     teamId: string;
     partyId: string;
     characterId: string;
-    stats: Stats;
-    roundDamage: RoundDamage[];
+    stats: ValorantStats;
+    roundDamage: ValorantRoundDamage[];
     competitiveTier: number;
     playerCard: string;
     playerTitle: string;
     preferredLevelBorder: string;
     accountLevel: number;
     sessionPlaytimeMinutes: number;
-    behaviorFactors: BehaviorFactors;
-    newPlayerExperienceDetails: NewPlayerExperienceDetails;
-    xpModifications: XpModification[];
+    behaviorFactors: ValorantBehaviorFactors;
+    newPlayerExperienceDetails: ValorantNewPlayerExperienceDetails;
+    xpModifications: ValorantXpModification[];
 }
 
-export interface Team {
+export interface ValorantTeam {
     teamId: string;
     won: boolean;
     roundsPlayed: number;
@@ -151,61 +151,61 @@ export interface Team {
     numPoints: number;
 }
 
-interface Location {
+interface ValorantLocation {
     x: number;
     y: number;
 }
 
-interface PlantPlayerLocation {
+interface ValorantPlantPlayerLocation {
     subject: string;
     viewRadians: number;
-    location: Location;
+    location: ValorantLocation;
 }
 
-interface PlantLocation {
+interface ValorantPlantLocation {
     x: number;
     y: number;
 }
 
-interface DefusePlayerLocation {
+interface ValorantDefusePlayerLocation {
     subject: string;
     viewRadians: number;
-    location: Location;
+    location: ValorantLocation;
 }
 
-interface DefuseLocation {
+interface ValorantDefuseLocation {
     x: number;
     y: number;
 }
 
-interface VictimLocation {
+interface ValorantVictimLocation {
     x: number;
     y: number;
 }
-interface PlayerLocation {
+interface ValorantPlayerLocation {
     subject: string;
     viewRadians: number;
-    location: Location;
+    location: ValorantLocation;
 }
 
-interface FinishingDamage {
+interface ValorantFinishingDamage {
     damageType: string;
     damageItem: string;
     isSecondaryFireMode: boolean;
 }
 
-interface Kill {
+interface ValorantKill {
     gameTime: number;
     roundTime: number;
     killer: string;
     victim: string;
-    victimLocation: VictimLocation;
+    victimLocation: ValorantVictimLocation;
     assistants: string[];
-    playerLocations: PlayerLocation[];
-    finishingDamage: FinishingDamage;
+    playerLocations: ValorantPlayerLocation[];
+    finishingDamage: ValorantFinishingDamage;
 }
 
-interface Damage {
+interface ValorantDamage {
     receiver: string;
     damage: number;
     legshots: number;
@@ -213,26 +213,26 @@ interface Damage {
     headshots: number;
 }
 
-interface Economy {
+interface ValorantEconomy {
     loadoutValue: number;
     weapon: string;
     armor: string;
     remaining: number;
     spent: number;
 }
-interface PlayerStat {
+interface ValorantPlayerStat {
     subject: string;
-    kills: Kill[];
-    damage: Damage[];
+    kills: ValorantKill[];
+    damage: ValorantDamage[];
     score: number;
-    economy: Economy;
-    ability: Ability;
+    economy: ValorantEconomy;
+    ability: ValorantAbility;
     wasAfk: boolean;
     wasPenalized: boolean;
     stayedInSpawn: boolean;
 }
 
-interface PlayerEconomy {
+interface ValorantPlayerEconomy {
     subject: string;
     loadoutValue: number;
     weapon: string;
@@ -241,36 +241,36 @@ interface PlayerEconomy {
     spent: number;
 }
 
-interface PlayerScore {
+interface ValorantPlayerScore {
     subject: string;
     score: number;
 }
 
-interface RoundResult {
+interface ValorantRoundResult {
     roundNum: number;
     roundResult: string;
     roundCeremony: string;
     winningTeam: string;
     bombPlanter: string;
     plantRoundTime: number;
-    plantPlayerLocations: PlantPlayerLocation[];
-    plantLocation: PlantLocation;
+    plantPlayerLocations: ValorantPlantPlayerLocation[];
+    plantLocation: ValorantPlantLocation;
     plantSite: string;
     defuseRoundTime: number;
-    defusePlayerLocations: DefusePlayerLocation[];
-    defuseLocation: DefuseLocation;
-    playerStats: PlayerStat[];
+    defusePlayerLocations: ValorantDefusePlayerLocation[];
+    defuseLocation: ValorantDefuseLocation;
+    playerStats: ValorantPlayerStat[];
     roundResultCode: string;
-    playerEconomies: PlayerEconomy[];
-    playerScores: PlayerScore[];
+    playerEconomies: ValorantPlayerEconomy[];
+    playerScores: ValorantPlayerScore[];
     bombDefuser: string;
 }
 export interface ValorantMatchDetails {
-    matchInfo: MatchInfo;
-    players: Player[];
+    matchInfo: ValorantMatchInfo;
+    players: ValorantPlayer[];
     bots: any[];
     coaches: any[];
-    teams: Team[];
-    roundResults: RoundResult[];
-    kills: Kill[];
+    teams: ValorantTeam[];
+    roundResults: ValorantRoundResult[];
+    kills: ValorantKill[];
 }

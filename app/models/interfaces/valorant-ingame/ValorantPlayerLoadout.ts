@@ -1,4 +1,4 @@
-interface Gun {
+interface ValorantGun {
     ID: string;
     SkinID: string;
     SkinLevelID: string;
@@ -9,13 +9,13 @@ interface Gun {
     CharmLevelID: string;
 }
 
-interface Spray {
+interface ValorantSpray {
     EquipSlotID: string;
     SprayID: string;
     SprayLevelID?: any;
 }
 
-interface Identity {
+interface ValorantIdentity {
     PlayerCardID: string;
     PlayerTitleID: string;
     AccountLevel: number;
@@ -26,8 +26,8 @@ interface Identity {
 export interface ValorantPlayerLoadout {
     Subject: string;
     Version: number;
-    Guns: Gun[];
-    Sprays: Spray[];
-    Identity: Identity;
+    Guns: ValorantGun[];
+    Sprays: ValorantSpray[];
+    Identity: ValorantIdentity;
     Incognito: boolean;
 }

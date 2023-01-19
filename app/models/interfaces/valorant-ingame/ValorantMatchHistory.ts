@@ -1,4 +1,4 @@
-interface History {
+interface ValorantHistory {
     MatchID: string;
     GameStartTime: any;
     QueueID: string;
@@ -9,5 +9,5 @@ export interface ValorantMatchHistory {
     BeginIndex: number;
     EndIndex: number;
     Total: number;
-    History: History[];
+    History: ValorantHistory[];
 }

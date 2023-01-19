@@ -1,50 +1,50 @@
-interface Competitive {
+interface ValorantCompetitive {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface Custom {
+interface ValorantCustom {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface Deathmatch {
+interface ValorantDeathmatch {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface Seeding {
+interface ValorantSeeding {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface Spikerush {
+interface ValorantSpikerush {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface Swiftplay {
+interface ValorantSwitftplay {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface WinsByTier {
+interface ValorantWinsByTier {
     [key: string]: number;
 }
 
-interface SeasonalInfo {
+export interface ValorantSeasonalInfo {
     SeasonID: string;
     NumberOfWins: number;
     NumberOfWinsWithPlacements: number;
@@ -54,33 +54,33 @@ interface SeasonalInfo {
     LeaderboardRank: number;
     CompetitiveTier: number;
     RankedRating: number;
-    WinsByTier: WinsByTier;
+    WinsByTier: ValorantWinsByTier;
     GamesNeededForRating: number;
     TotalWinsNeededForRank: number;
 }
 
-interface SeasonalInfoBySeasonID {
-    [key: string]: SeasonalInfo;
+export interface ValorantSeasonalInfoBySeasonID {
+    [key: string]: ValorantSeasonalInfo;
 }
 
-interface Unrated {
+interface ValorantUnrated {
     TotalGamesNeededForRating: number;
     TotalGamesNeededForLeaderboard: number;
     CurrentSeasonGamesNeededForRating: number;
-    SeasonalInfoBySeasonID: SeasonalInfoBySeasonID;
+    SeasonalInfoBySeasonID: ValorantSeasonalInfoBySeasonID;
 }
 
-interface QueueSkills {
-    competitive: Competitive;
-    custom: Custom;
-    deathmatch: Deathmatch;
-    seeding: Seeding;
-    spikerush: Spikerush;
-    swiftplay: Swiftplay;
-    unrated: Unrated;
+interface ValorantQueueSkills {
+    competitive: ValorantCompetitive;
+    custom: ValorantCustom;
+    deathmatch: ValorantDeathmatch;
+    seeding: ValorantSeeding;
+    spikerush: ValorantSpikerush;
+    swiftplay: ValorantSwitftplay;
+    unrated: ValorantUnrated;
 }
 
-interface LatestCompetitiveUpdate {
+interface ValorantLatestCompetitiveUpdate {
     MatchID: string;
     MapID: string;
     SeasonID: string;
@@ -99,8 +99,8 @@ export interface ValorantPlayerMMR {
     Version: number;
     Subject: string;
     NewPlayerExperienceFinished: boolean;
-    QueueSkills: QueueSkills;
-    LatestCompetitiveUpdate: LatestCompetitiveUpdate;
+    QueueSkills: ValorantQueueSkills;
+    LatestCompetitiveUpdate: ValorantLatestCompetitiveUpdate;
     IsLeaderboardAnonymized: boolean;
     IsActRankBadgeHidden: boolean;
 }

@@ -1,4 +1,6 @@
-interface ConnectionDetails {
+import { ValorantSeasonalBadgeInfo } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+
+interface ValorantConnectionDetails {
     GameServerHosts: string[];
     GameServerHost: string;
     GameServerPort: number;
@@ -7,7 +9,7 @@ interface ConnectionDetails {
     PlayerKey: string;
 }
 
-interface PlayerIdentity {
+interface ValorantPlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -17,25 +19,17 @@ interface PlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-interface SeasonalBadgeInfo {
-    SeasonID: string;
-    NumberOfWins: number;
-    WinsByTier?: any;
-    Rank: number;
-    LeaderboardRank: number;
-}
-
-interface Player {
+interface ValorantPlayer {
     Subject: string;
     TeamID: string;
     CharacterID: string;
-    PlayerIdentity: PlayerIdentity;
-    SeasonalBadgeInfo: SeasonalBadgeInfo;
+    PlayerIdentity: ValorantPlayerIdentity;
+    SeasonalBadgeInfo: ValorantSeasonalBadgeInfo;
     IsCoach: boolean;
     IsAssociated: boolean;
 }
 
-interface MatchmakingData {
+interface ValorantMatchmakingData {
     QueueID: string;
     IsRanked: boolean;
 }
@@ -52,8 +46,8 @@ export interface ValorantCoreGame {
     TeamMUCName: string;
     TeamVoiceID: string;
     IsReconnectable: boolean;
-    ConnectionDetails: ConnectionDetails;
+    ConnectionDetails: ValorantConnectionDetails;
     PostGameDetails?: any;
-    Players: Player[];
-    MatchmakingData: MatchmakingData;
+    Players: ValorantPlayer[];
+    MatchmakingData: ValorantMatchmakingData;
 }

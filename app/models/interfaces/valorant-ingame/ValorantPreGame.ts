@@ -2,7 +2,7 @@ import { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 
 export type MatchId = string;
 
-export interface PlayerIdentity {
+export interface ValorantPlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -12,7 +12,7 @@ export interface PlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-interface SeasonalBadgeInfo {
+export interface ValorantSeasonalBadgeInfo {
     SeasonID: string;
     NumberOfWins: number;
     WinsByTier?: any;
@@ -20,23 +20,23 @@ interface SeasonalBadgeInfo {
     LeaderboardRank: number;
 }
 
-export type Player = {
+export type ValorantPlayer = {
     Subject: string;
     CharacterID: string;
     CharacterSelectionState: string;
     PregamePlayerState: string;
     CompetitiveTier: number;
-    PlayerIdentity: PlayerIdentity;
-    SeasonalBadgeInfo: SeasonalBadgeInfo;
+    PlayerIdentity: ValorantPlayerIdentity;
+    SeasonalBadgeInfo: ValorantSeasonalBadgeInfo;
     IsCaptain: boolean;
 };
 
-interface Team {
+interface ValorantTeam {
     TeamID: string;
-    Players: Player[];
+    Players: ValorantPlayer[];
 }
 
-interface AllyPlayerIdentity {
+interface ValorantAllyPlayerIdentity {
     Subject: string;
     PlayerCardID: string;
     PlayerTitleID: string;
@@ -46,29 +46,29 @@ interface AllyPlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-interface AllyPlayer {
+interface ValorantAllyPlayer {
     Subject: string;
     CharacterID: string;
     CharacterSelectionState: string;
     PregamePlayerState: string;
     CompetitiveTier: number;
-    PlayerIdentity: AllyPlayerIdentity;
-    SeasonalBadgeInfo: SeasonalBadgeInfo;
+    PlayerIdentity: ValorantAllyPlayerIdentity;
+    SeasonalBadgeInfo: ValorantSeasonalBadgeInfo;
     IsCaptain: boolean;
 }
 
-export interface AllyTeam {
+export interface ValorantAllyTeam {
     TeamID: string;
-    Players: AllyPlayer[];
+    Players: ValorantAllyPlayer[];
 }
 
-interface CastedVotes {}
+interface ValorantCastedVotes {}
 
 export interface ValorantPreGame {
     ID: string;
     Version: number;
-    Teams: Team[];
-    AllyTeam: AllyTeam;
+    Teams: ValorantTeam[];
+    AllyTeam: ValorantAllyTeam;
     EnemyTeam?: any;
     ObserverSubjects: any[];
     MatchCoaches: any[];
@@ -79,7 +79,7 @@ export interface ValorantPreGame {
     MapID: string;
     MapSelectPool: any[];
     BannedMapIDs: any[];
-    CastedVotes: CastedVotes;
+    CastedVotes: ValorantCastedVotes;
     MapSelectSteps: any[];
     MapSelectStep: number;
     Team1: string;

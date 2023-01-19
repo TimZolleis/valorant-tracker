@@ -1,6 +1,9 @@
 import { ValorantMediaCharacterApi } from '~/utils/api/valorant-media/ValorantMediaCharacterApi';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
-import type { Player, PlayerIdentity } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
+import type {
+    ValorantPlayer,
+    ValorantPlayerIdentity,
+} from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { ValorantPlayerApiClient } from '~/utils/api/valorant/ValorantPlayerApiClient';
 import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import type { PlayerRank } from '~/utils/player/rank.server';
@@ -16,11 +19,12 @@ import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/Valora
 import { calculateWinrate } from '~/utils/calculation/winrate.server';
 import type { ValorantSeason } from '~/models/interfaces/valorant-ingame/ValorantContent';
 import type { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
+import { ValorantSeasonalInfoBySeasonID } from '~/models/interfaces/valorant-ingame/ValorantPlayerMMR';
 
-export interface PlayerWithData extends Player {
+export interface PlayerWithData extends ValorantPlayer {
     character?: ValorantMediaCharacter;
     rank: PlayerRank;
-    PlayerIdentity: PlayerIdentity & { nameService: ValorantNameService };
+    PlayerIdentity: ValorantPlayerIdentity & { nameService: ValorantNameService };
     competitiveUpdate: ValorantCompetitiveUpdate;
 }
 
@@ -41,7 +45,7 @@ export async function getCompetitiveUpdates(
     );
 }
 
-async function getPlayerData(user: AuthenticatedValorantUser, player: Player) {
+async function getPlayerData(user: AuthenticatedValorantUser, player: ValorantPlayer) {
     let character = undefined;
     if (player.CharacterID) {
         character = await getPlayerCharacter(player.CharacterID);
@@ -55,7 +59,7 @@ async function getPlayerData(user: AuthenticatedValorantUser, player: Player) {
 
 export async function getPlayersData(
     user: AuthenticatedValorantUser,
-    players: Player[]
+    players: ValorantPlayer[]
 ): Promise<PlayerWithData[]> {
     const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
     return await Promise.all(
@@ -98,12 +102,9 @@ export async function getMatchHistory(user: AuthenticatedValorantUser, queue: Va
 type StatsBySeason = ValorantSeason & { winrate: number };
 
 export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid: Puuid) {
-    let topRank = 0;
-    let totalGames = 0;
-    let totalWins = 0;
-    const playerApiClient = new ValorantPlayerApiClient(user);
-    const mmr = await playerApiClient.getMMR();
+    const mmr = await new ValorantPlayerApiClient(user).getMMR();
     const competitiveSeasonIds = Object.keys(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
+    const topTier = getTopTier(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
     const statsBySeason = await Promise.all(
         competitiveSeasonIds.map(async (competitiveSeasonId) => {
             const seasonalInfo =
@@ -111,26 +112,47 @@ export async function getCompetitiveStats(user: AuthenticatedValorantUser, puuid
             const season = await new ValorantMediaContentApiClient().getSeason(
                 seasonalInfo.SeasonID
             );
-            const winRate = calculateWinrate(seasonalInfo.NumberOfWins, seasonalInfo.NumberOfGames);
-            const seasonTiers = Object.keys(seasonalInfo.WinsByTier);
-            const highestRank = seasonTiers.find((tier) => {
-                return parseInt(tier) > topRank;
-            });
-            totalGames += seasonalInfo.NumberOfGames;
-            totalWins += seasonalInfo.NumberOfWins;
-            if (highestRank) {
-                topRank = parseInt(highestRank);
-            }
+            const seasonalWinRate = calculateWinrate(
+                seasonalInfo.NumberOfWins,
+                seasonalInfo.NumberOfGames
+            );
+
             return {
                 ...seasonalInfo,
-                winRate,
+                seasonalWinRate,
                 ...season,
             };
         })
     );
-    const totalWinrate = calculateWinrate(totalWins, totalGames);
+    const totalWinrate = getTotalWinrate(mmr.QueueSkills.competitive.SeasonalInfoBySeasonID);
     return {
         winrate: totalWinrate,
         seasonalInfo: statsBySeason,
     };
+}
+
+function getTopTier(seasonalInfo: ValorantSeasonalInfoBySeasonID) {
+    let topTier = 0;
+    const seasonIds = Object.keys(seasonalInfo);
+    seasonIds.forEach((seasonId) => {
+        const season = seasonalInfo[seasonId];
+        Object.keys(season.WinsByTier).forEach((tier) => {
+            if (parseInt(tier) > topTier) {
+                topTier = parseInt(tier);
+            }
+        });
+    });
+    return topTier;
+}
+
+function getTotalWinrate(seasonalInfo: ValorantSeasonalInfoBySeasonID) {
+    let allGames = 0;
+    let allWins = 0;
+    const seasonIds = Object.keys(seasonalInfo);
+    seasonIds.forEach((seasonId) => {
+        const season = seasonalInfo[seasonId];
+        allGames += season.NumberOfGames;
+        allWins += season.NumberOfWins;
+    });
+    return calculateWinrate(allWins, allGames);
 }
