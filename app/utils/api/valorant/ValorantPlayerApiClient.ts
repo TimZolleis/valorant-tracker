@@ -46,7 +46,7 @@ export class ValorantPlayerApiClient {
             ),
             {},
             {
-                cacheable: true,
+                key: 'mmr',
                 expiration: 900,
             }
         );

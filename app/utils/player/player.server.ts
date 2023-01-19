@@ -11,12 +11,11 @@ import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiCli
 import type { ValorantQueue } from '~/models/static/Queue';
 import { QUEUE } from '~/models/static/Queue';
 import { determinePlayerTeam } from '~/utils/match/match.server';
-import type { MatchHistory } from '~/routes';
 import { getMatchMap } from '~/utils/match/team.server';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { calculateWinrate } from '~/utils/calculation/winrate.server';
-import { ValorantSeason } from '~/models/interfaces/valorant-ingame/ValorantContent';
-import { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
+import type { ValorantSeason } from '~/models/interfaces/valorant-ingame/ValorantContent';
+import type { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
 
 export interface PlayerWithData extends Player {
     character?: ValorantMediaCharacter;
@@ -58,14 +57,15 @@ export async function getPlayersData(
     user: AuthenticatedValorantUser,
     players: Player[]
 ): Promise<PlayerWithData[]> {
-    let times = 0;
     const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
     return await Promise.all(
         players.map(async (player) => {
-            const { character, nameService } = await getPlayerData(user, player);
-            const rank = await getPlayerRank(user, player.Subject, activeSeason, competitiveTier);
-            const competitiveUpdate = await getCompetitiveUpdates(user, player.Subject, 20);
-            times += 1;
+            const [{ character, nameService }, rank, competitiveUpdate] = await Promise.all([
+                getPlayerData(user, player),
+                getPlayerRank(user, player.Subject, activeSeason, competitiveTier),
+                getCompetitiveUpdates(user, player.Subject, 20),
+            ]);
+
             return {
                 ...player,
                 PlayerIdentity: {

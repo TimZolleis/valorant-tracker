@@ -3,12 +3,13 @@ import { createClient } from 'redis';
 import process from 'process';
 
 export type CacheConfig = {
-    cacheable: boolean;
+    key: string;
     expiration: number;
 };
 
 export class RedisClient {
     client: RedisClientType;
+
     async init() {
         const url = process.env.REDIS_DATABASE_URL;
         this.client = createClient({
@@ -18,12 +19,16 @@ export class RedisClient {
         return this;
     }
 
-    async setValue(url: string, value: string, cacheConfig: CacheConfig) {
-        await this.client.setEx(url, cacheConfig.expiration, value);
+    private constructKey(url: string, cacheConfig: CacheConfig) {
+        return `${url}-${cacheConfig.key}`;
     }
 
-    async getValue(url: string) {
-        return await this.client.get(url);
+    async setValue(url: string, value: string, cacheConfig: CacheConfig) {
+        await this.client.setEx(this.constructKey(url, cacheConfig), cacheConfig.expiration, value);
+    }
+
+    async getValue(url: string, cacheConfig: CacheConfig) {
+        return await this.client.get(this.constructKey(url, cacheConfig));
     }
 
     async disconnect() {
