@@ -63,11 +63,13 @@ export class ValorantGameApiClient {
             }
         }
         const url = useFallback ? request.getFallback().getUrl() : request.getUrl();
-        const startTime = new Date().getTime();
-        console.log('Fetching', request.getUrl());
+
         const result = await this.axios
             .get(url, config)
-            .then((res) => res.data)
+            .then((res) => {
+                // console.log(res);
+                return res.data;
+            })
             .catch(async (error) => {
                 if (error.response?.status === 400) {
                     throw redirect('/reauth');
@@ -76,18 +78,16 @@ export class ValorantGameApiClient {
                     if (!useFallback) {
                         // await this.get(request, config, cacheConfig, true);
                     } else {
-                        console.log(error, url);
                         throw new RiotServicesUnavailableException();
                     }
                 } else {
                     throw new Error(error.message);
                 }
             });
+
         if (cacheConfig) {
-            console.log('Got result', JSON.stringify(result).length);
             await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
         }
-        console.log('Got from Riot Api, took', new Date().getTime() - startTime);
         return result;
     }
 
@@ -145,7 +145,6 @@ export class ValorantGameApiClient {
     }
 
     private async setCache(url: string, value: string, cacheConfig: CacheConfig) {
-        console.log('Setting to cache', url);
         const client = await new RedisClient().init();
         await client.setValue(url, value, cacheConfig);
         await client.disconnect();

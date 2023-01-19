@@ -44,6 +44,7 @@ export async function getPlayerRank(
             rr,
         };
     } catch (error: any) {
+        console.log(error);
         throw new GeneralApiException('PlayerRank', error.message);
     }
 }

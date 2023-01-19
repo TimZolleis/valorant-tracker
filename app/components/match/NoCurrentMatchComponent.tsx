@@ -3,24 +3,20 @@ import { DateTime } from 'luxon';
 import { WhiteButton } from '~/components/form/button/WhiteButton';
 import { useFetcher } from '@remix-run/react';
 
-export const NoCurrentMatchComponent = () => {
+export const NoCurrentMatchComponent = ({
+    onUpdate,
+    isLoading,
+}: {
+    onUpdate: any;
+    isLoading: boolean;
+}) => {
     const fetcher = useFetcher();
     const checkForGame = () => {
-        fetcher.load('/match/live');
+        onUpdate();
         setRemainingTime(10);
     };
 
-    useEffect(() => {
-        if (fetcher.type === 'done') {
-            setLoadingState(false);
-        }
-        if (fetcher.type === 'normalLoad') {
-            setLoadingState(true);
-        }
-    }, [fetcher.type]);
-
     const [remainingTime, setRemainingTime] = useState(10);
-    const [loadingState, setLoadingState] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -55,9 +51,9 @@ export const NoCurrentMatchComponent = () => {
                     <WhiteButton
                         doesSubmit={false}
                         onClick={() => checkForGame()}
-                        disabled={loadingState}>
-                        {!loadingState && <p>Check now</p>}
-                        {loadingState && (
+                        disabled={isLoading}>
+                        {!isLoading && <p>Check now</p>}
+                        {isLoading && (
                             <div className={'flex items-center'}>
                                 <svg
                                     aria-hidden='true'

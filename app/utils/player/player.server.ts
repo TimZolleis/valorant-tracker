@@ -35,8 +35,7 @@ export async function getCompetitiveUpdates(
     numberOfGames?: number
 ) {
     const matchApi = new ValorantMatchApiClient(user);
-    console.log('Fetching comp updates for', puuid);
-    return await matchApi.getCompetitiveUpdates(
+    return matchApi.getCompetitiveUpdates(
         puuid ? puuid : user.puuid,
         QUEUE.COMPETITIVE,
         numberOfGames
@@ -59,14 +58,14 @@ export async function getPlayersData(
     user: AuthenticatedValorantUser,
     players: Player[]
 ): Promise<PlayerWithData[]> {
+    let times = 0;
     const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
     return await Promise.all(
         players.map(async (player) => {
-            const [{ character, nameService }, rank, competitiveUpdate] = await Promise.all([
-                getPlayerData(user, player),
-                getPlayerRank(user, player.Subject, activeSeason, competitiveTier),
-                getCompetitiveUpdates(user, player.Subject, 19),
-            ]);
+            const { character, nameService } = await getPlayerData(user, player);
+            const rank = await getPlayerRank(user, player.Subject, activeSeason, competitiveTier);
+            const competitiveUpdate = await getCompetitiveUpdates(user, player.Subject, 20);
+            times += 1;
             return {
                 ...player,
                 PlayerIdentity: {

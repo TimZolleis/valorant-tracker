@@ -43,13 +43,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const user = await requireUser(request);
     let error = undefined;
     try {
-        // const pregame = await getPregameMatch(user);
         const pregame = TEST_MATCH;
         const players = pregame.AllyTeam.Players;
-        const [playersData, map] = await Promise.all([
-            getPlayersData(user, players),
-            getMatchMap(pregame.MapID),
-        ]);
+        const playersData = await getPlayersData(user, players);
+        const map = await getMatchMap(pregame.MapID);
         const pregameWithData = {
             ...pregame,
             AllyTeam: {
@@ -58,10 +55,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
             },
             Map: map,
         };
+        console.log('Pre Game found!');
         return json<LiveMatchLoaderData>({
             pregame: pregameWithData,
         });
     } catch (exception: any) {
+        console.log('error', exception.message);
         error = exception.message;
     }
     try {

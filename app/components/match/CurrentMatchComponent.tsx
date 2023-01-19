@@ -8,10 +8,12 @@ type GameStatus = 'unknown' | 'pregame' | 'coregame';
 
 const CurrentMatchComponent = () => {
     const fetcher = useFetcher<LiveMatchLoaderData>();
+
+    const checkForGame = () => {
+        fetcher.load('/match/live');
+    };
+    const [loadingState, setLoadingState] = useState(false);
     useEffect(() => {
-        if (fetcher.type === 'init') {
-            fetcher.load('/match/live');
-        }
         if (fetcher.data?.pregame) {
             setGameStatus('pregame');
         }
@@ -23,12 +25,21 @@ const CurrentMatchComponent = () => {
         }
     }, [fetcher]);
 
+    useEffect(() => {
+        if (fetcher.type === 'done') {
+            setLoadingState(false);
+        }
+        if (fetcher.type === 'normalLoad') {
+            setLoadingState(true);
+        }
+    }, [fetcher.type]);
+
     const [gameStatus, setGameStatus] = useState<GameStatus>('unknown');
 
     if (gameStatus === 'pregame' && fetcher.data?.pregame) {
         return <PregameComponent pregame={fetcher.data?.pregame} />;
     } else {
-        return <NoCurrentMatchComponent />;
+        return <NoCurrentMatchComponent onUpdate={checkForGame} isLoading={loadingState} />;
     }
 };
 

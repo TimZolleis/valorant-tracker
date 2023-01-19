@@ -35,10 +35,6 @@ export class ValorantPlayerApiClient {
                     startIndex: 0,
                     endIndex: 1,
                 },
-            },
-            {
-                cacheable: true,
-                expiration: 600,
             }
         );
     }
