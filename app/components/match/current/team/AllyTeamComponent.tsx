@@ -7,14 +7,10 @@ interface AllyTeamWithData extends AllyTeam {
     Players: PlayerWithData[];
 }
 
-export const TeamComponent = ({ team }: { team: AllyTeamWithData }) => {
-    useEffect(() => {
-        console.log(team);
-    });
-
+export const AllyTeamComponent = ({ allyTeam }: { allyTeam: AllyTeamWithData }) => {
     return (
         <div className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-3'}>
-            {team.Players.map((player) => (
+            {allyTeam.Players.map((player) => (
                 <PlayerComponent key={player.Subject} player={player} />
             ))}
         </div>

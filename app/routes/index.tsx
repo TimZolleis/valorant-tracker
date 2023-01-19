@@ -4,7 +4,6 @@ import { requireUser } from '~/utils/session/session.server';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import { getCurrentCompetitiveTiers } from '~/utils/player/rank.server';
 import { useLoaderData } from '@remix-run/react';
-import ContentContainer from '~/components/common/Container';
 import type { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import CurrentMatchComponent from '~/components/match/CurrentMatchComponent';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
@@ -22,6 +21,8 @@ import {
     getMatchHistory,
 } from '~/utils/player/player.server';
 import { useOptionalUser } from '~/utils/hooks/matches';
+import { PageHeader } from '~/components/common/page/PageHeader';
+import ContentContainer from '~/components/common/page/ContentContainer';
 
 type LoaderData = {
     user: AuthenticatedValorantUser;
@@ -65,7 +66,7 @@ export default function Index() {
     const user = useOptionalUser();
     return (
         <>
-            <p className={' text-white font-inter font-bold text-headline-large py-3'}>Dashboard</p>
+            <PageHeader text={'Dashboard'} />
             <div className={'space-y-5'}>
                 <div className={'flex gap-2 w-full'}>
                     <ContentContainer>

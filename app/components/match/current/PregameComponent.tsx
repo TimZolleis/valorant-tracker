@@ -2,7 +2,7 @@ import { LiveIndicator } from '~/components/common/indicator/LiveIndicator';
 import { ServerRegions } from '~/models/static/ServerRegions';
 import { DefaultTag } from '~/components/tag/DefaultTag';
 import { ValorantPreGameWithDetails } from '~/routes/match/live';
-import { TeamComponent } from '~/components/match/current/team/TeamComponent';
+import { AllyTeamComponent } from '~/components/match/current/team/AllyTeamComponent';
 
 function getServerRegion(gamePodId: string) {
     if (gamePodId.includes('madrid')) {
@@ -30,7 +30,7 @@ export const PregameComponent = ({ pregame }: { pregame: ValorantPreGameWithDeta
         <>
             <div className={'w-full p-5'}>
                 <div className={'flex w-full'}>
-                    <span className={'p-3 rounded-xl ring ring-1 ring-gray-600'}>
+                    <span className={'p-3 rounded-xl ring ring-1 ring-gray-600 '}>
                         <img
                             className={'h-6 animate-pulse'}
                             src='/resources/img/svg/pregame.svg'
@@ -53,13 +53,13 @@ export const PregameComponent = ({ pregame }: { pregame: ValorantPreGameWithDeta
                         <DefaultTag text={pregame.Map?.displayName} color={'bg-red-800'} />
                     </div>
                     <p className={'font-inter text-body-medium text-gray-400 font-normal mt-2'}>
-                        Currently there is no live match detected. Rechecking in{' '}
+                        Live game detected
                     </p>
                     <div>
                         <p className={'font-inter text-white font-medium text-label-large py-3'}>
                             Ally Players
                         </p>
-                        <TeamComponent team={pregame.AllyTeam} />
+                        <AllyTeamComponent allyTeam={pregame.AllyTeam} />
                     </div>
                 </div>
             </div>
