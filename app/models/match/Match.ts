@@ -8,4 +8,11 @@ export class Match {
     details: ValorantMatchDetails;
     map: ValorantMediaMap;
     playerTeam: ValorantTeam;
+
+
+    constructor(details: ValorantMatchDetails, map: ValorantMediaMap, playerTeam: ValorantTeam) {
+        this.details = details;
+        this.map = map;
+        this.playerTeam = playerTeam;
+    }
 }

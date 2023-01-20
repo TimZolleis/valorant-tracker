@@ -16,7 +16,7 @@ import type {
 import type { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
 import type { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 import {
-    getCompetitiveUpdates,
+    getCompetitiveUpdate,
     getPlayerStatistics,
     getMatchHistory,
 } from '~/utils/player/player.server';
@@ -45,7 +45,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const [{ activeSeason, competitiveTier }, competitiveUpdate, matchHistory, playerStatistics] =
         await Promise.all([
             getCurrentCompetitiveTiers(user),
-            getCompetitiveUpdates(user, user.puuid, 20),
+            getCompetitiveUpdate(user, user.puuid, 20),
             getMatchHistory(user, QUEUE.COMPETITIVE),
             getPlayerStatistics(user, user.puuid),
         ]);

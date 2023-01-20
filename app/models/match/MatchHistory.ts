@@ -3,7 +3,13 @@ import { Match } from '~/models/match/Match';
 export class MatchHistory {
     matches: Match[];
 
-    constructor(matches: Match[]) {
-        this.matches = matches;
+    constructor(matches?: Match[]) {
+        if (matches) {
+            this.matches = matches;
+        }
+    }
+
+    addMatch(match: Match) {
+        this.matches.push(match);
     }
 }

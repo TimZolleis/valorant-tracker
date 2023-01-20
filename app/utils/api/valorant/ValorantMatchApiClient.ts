@@ -114,7 +114,7 @@ export class ValorantMatchApiClient {
         queue: ValorantQueue,
         numberOfGames: number = 10
     ): Promise<ValorantCompetitiveUpdate> {
-        const result = await this.client.get(
+        return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_COMPETITIVE_UPDATES(puuid)
             ),
@@ -130,8 +130,6 @@ export class ValorantMatchApiClient {
                 expiration: 900,
             }
         );
-
-        return result;
     }
 }
 

@@ -21,14 +21,12 @@ export class ValorantPlayerApiClient {
         return await this.client.get(url);
     }
 
-    async getMostRecentGame(
+    async getLatestCompetitiveUpdate(
         competitive: boolean = false,
         puuid: Puuid
-    ): Promise<ValorantCompetitiveUpdate> {
+    ): Promise<ValorantPlayerMMR> {
         return await this.client.get(
-            new RiotRequest(this.client.user.region).buildBaseUrl(
-                PLAYER_ENDPOINT.COMPETITIVE_UPDATES(puuid)
-            ),
+            new RiotRequest(this.client.user.region).buildBaseUrl(PLAYER_ENDPOINT.MMR(puuid)),
             {
                 params: {
                     ...(competitive ? { queue: 'competitive' } : {}),
@@ -39,10 +37,10 @@ export class ValorantPlayerApiClient {
         );
     }
 
-    async getMMR(): Promise<ValorantPlayerMMR> {
+    async getMMR(puuid?: string): Promise<ValorantPlayerMMR> {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
-                PLAYER_ENDPOINT.MMR(this.client.user.puuid)
+                PLAYER_ENDPOINT.MMR(puuid ? puuid : this.client.user.puuid)
             ),
             {},
             {

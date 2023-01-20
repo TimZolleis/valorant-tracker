@@ -1,3 +1,3 @@
-export function calculateWinrate(gamesWon: number, totalNumberOfGames: number) {
-    return (gamesWon / totalNumberOfGames) * 100;
+export function calculateWinrate(gamesWon: number, gamesPlayed: number) {
+    return (gamesWon / gamesPlayed) * 100;
 }

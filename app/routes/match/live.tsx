@@ -5,10 +5,11 @@ import { ValorantMatchApiClient } from '~/utils/api/valorant/ValorantMatchApiCli
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import type { ValorantPreGame } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import type { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
-import { getPlayersData, PlayerWithData } from '~/utils/player/player.server';
+import { getPlayersInMatchDetails, PlayerWithData } from '~/utils/player/player.server';
 import { TEST_MATCH } from '~/config/clientConfig';
 import { getMatchMap } from '~/utils/match/match.server';
 import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
+import { PreGameMatch } from '~/models/match/PreGameMatch';
 
 async function getPregameMatch(user: AuthenticatedValorantUser) {
     const client = new ValorantMatchApiClient(user);
@@ -23,17 +24,10 @@ async function getCoregameMatch(user: AuthenticatedValorantUser) {
 }
 
 export type LiveMatchLoaderData = {
-    pregame?: ValorantPreGameWithDetails;
+    pregame?: PreGameMatch;
     coregame?: ValorantCoreGame;
     error?: string;
 };
-
-export type ValorantPreGameWithDetails = ValorantPreGame & {
-    AllyTeam: {
-        TeamID: string;
-        Players: PlayerWithData[];
-    };
-} & { Map?: ValorantMediaMap };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
     const user = await requireUser(request);
@@ -42,22 +36,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
         const pregame = TEST_MATCH;
         const players = pregame.AllyTeam.Players;
         const [playersData, map] = await Promise.all([
-            getPlayersData(user, players),
+            getPlayersInMatchDetails(user, players),
             getMatchMap(pregame.MapID),
         ]);
-        const pregameWithData = {
-            ...pregame,
-            AllyTeam: {
-                ...pregame.AllyTeam,
-                Players: playersData,
-            },
-            Map: map,
-        };
+        const match = new PreGameMatch(pregame, playersData, map);
         return json<LiveMatchLoaderData>({
-            pregame: pregameWithData,
+            pregame: match,
         });
     } catch (exception: any) {
-        console.log('error', exception);
         error = exception.message;
     }
     try {

@@ -12,9 +12,10 @@ import {
 } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
 import { ValorantMediaCompetitiveSeason } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveSeason';
 import { GeneralApiException } from '~/models/exception/general/GeneralApiException';
+import { TierNotFoundException } from '~/models/exception/rank/TierNotFoundException';
 
 export type PlayerRank = {
-    tier?: Tier;
+    tier: Tier;
     unrated: boolean;
     gamesNeededForRating?: number;
     rr: number;
@@ -22,21 +23,20 @@ export type PlayerRank = {
 
 export async function getPlayerRank(
     user: AuthenticatedValorantUser,
-    puuid: Puuid,
-    activeSeason: ActiveSeason,
-    competitiveTier: ValorantMediaCompetitiveTier
+    puuid: Puuid
 ): Promise<PlayerRank> {
+    const { activeSeason, competitiveTier } = await getCurrentCompetitiveTiers(user);
     try {
         const { unrated, gamesNeededForRating } = await checkGamesNeededForRating(
             activeSeason,
             user
         );
         const playerApi = new ValorantPlayerApiClient(user);
-        const mostRecentGame = await playerApi.getMostRecentGame(true, puuid);
-        const tier = competitiveTier.tiers.find((tier) => {
-            return tier.tier === mostRecentGame.Matches[0].TierAfterUpdate;
-        });
-        const rr = mostRecentGame.Matches[0].RankedRatingAfterUpdate;
+        const latestCompetitiveUpdate = await playerApi
+            .getMMR(puuid)
+            .then((res) => res.LatestCompetitiveUpdate);
+        const tier = await findTier(user, latestCompetitiveUpdate.TierAfterUpdate);
+        const rr = latestCompetitiveUpdate.RankedRatingAfterUpdate;
         return {
             unrated,
             gamesNeededForRating,
@@ -48,6 +48,17 @@ export async function getPlayerRank(
     }
 }
 
+export async function findTier(user: AuthenticatedValorantUser, tierNumber: number) {
+    const { competitiveTier } = await getCurrentCompetitiveTiers(user);
+    const tier = competitiveTier.tiers.find((tier) => {
+        return tier.tier === tierNumber;
+    });
+    if (!tier) {
+        throw new TierNotFoundException();
+    }
+    return tier;
+}
+
 function findCompetitiveSeason(
     competitiveSeasons: ValorantMediaCompetitiveSeason[],
     activeSeasonId: string
@@ -56,6 +67,7 @@ function findCompetitiveSeason(
         return competitiveSeason.seasonUuid === activeSeasonId;
     });
 }
+
 export async function getCurrentCompetitiveTiers(user: AuthenticatedValorantUser) {
     try {
         const [activeSeason, competitiveSeasons] = await Promise.all([

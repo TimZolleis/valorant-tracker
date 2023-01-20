@@ -1,6 +1,7 @@
 import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import type { ValorantMatchDetails } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
+import { MatchMapNotFoundException } from '~/models/exception/match/MatchMapNotFoundException';
 
 export function determinePlayerTeam(puuid: Puuid, matchDetails: ValorantMatchDetails) {
     const teamId = matchDetails.players.find((player) => {
@@ -13,7 +14,11 @@ export function determinePlayerTeam(puuid: Puuid, matchDetails: ValorantMatchDet
 
 export async function getMatchMap(mapId: string) {
     const maps = await new ValorantMediaContentApiClient().getMaps();
-    return maps.find((map) => {
+    const map = maps.find((map) => {
         return map.mapUrl === mapId;
     });
+    if (!map) {
+        throw new MatchMapNotFoundException();
+    }
+    return map;
 }

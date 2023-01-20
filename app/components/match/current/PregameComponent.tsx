@@ -1,8 +1,8 @@
 import { LiveIndicator } from '~/components/common/indicator/LiveIndicator';
 import { ServerRegions } from '~/models/static/ServerRegions';
 import { DefaultTag } from '~/components/tag/DefaultTag';
-import { ValorantPreGameWithDetails } from '~/routes/match/live';
-import { AllyTeamComponent } from '~/components/match/current/team/AllyTeamComponent';
+import { TeamComponent } from '~/components/match/current/team/TeamComponent';
+import { PreGameMatch } from '~/models/match/PreGameMatch';
 
 function getServerRegion(gamePodId: string) {
     if (gamePodId.includes('madrid')) {
@@ -25,7 +25,7 @@ function getServerRegion(gamePodId: string) {
     } else return ServerRegions.UNKNOWN;
 }
 
-export const PregameComponent = ({ pregame }: { pregame: ValorantPreGameWithDetails }) => {
+export const PregameComponent = ({ pregame }: { pregame: PreGameMatch }) => {
     return (
         <>
             <div className={'w-full p-5'}>
@@ -47,10 +47,10 @@ export const PregameComponent = ({ pregame }: { pregame: ValorantPreGameWithDeta
                     </div>
                     <div className={'flex gap-2 items-center mt-1'}>
                         <DefaultTag
-                            text={getServerRegion(pregame.GamePodID)}
+                            text={getServerRegion(pregame.matchDetails.GamePodID)}
                             color={'bg-fuchsia-800'}
                         />
-                        <DefaultTag text={pregame.Map?.displayName} color={'bg-red-800'} />
+                        <DefaultTag text={pregame.map.displayName} color={'bg-red-800'} />
                     </div>
                     <p className={'font-inter text-body-medium text-gray-400 font-normal mt-2'}>
                         Live game detected
@@ -59,7 +59,7 @@ export const PregameComponent = ({ pregame }: { pregame: ValorantPreGameWithDeta
                         <p className={'font-inter text-white font-medium text-label-large py-3'}>
                             Ally Players
                         </p>
-                        <AllyTeamComponent allyTeam={pregame.AllyTeam} />
+                        <TeamComponent players={pregame.players} />
                     </div>
                 </div>
             </div>
