@@ -1,6 +1,6 @@
-import { MatchHistory } from '~/routes';
+import { Match } from '~/models/match/Match';
 
-export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
+export const MatchComponent = ({ match }: { match: Match }) => {
     return (
         <>
             <div
@@ -8,8 +8,8 @@ export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
                     'bg-mud p-5 ring ring-1 ring-gray-600 rounded-lg grid grid-cols-2 gap-5 items-center hover:cursor-pointer hover:bg-neutral-800 hover:scale-95 transition ease-in-out hover:ring-gray-300'
                 }>
                 <div className={'flex w-full justify-between'}>
-                    {history.matchDetails.teams
-                        .sort((a, b) => (b.teamId === history.playerTeam?.teamId ? 1 : -1))
+                    {match.details.teams
+                        .sort((a, b) => (b.teamId === match.playerTeam.teamId ? 1 : -1))
                         .map((team, index) => (
                             <>
                                 <div key={team.teamId}>
@@ -30,7 +30,7 @@ export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
                         ))}
                 </div>
                 <div>
-                    {!history.playerTeam?.won && (
+                    {!match.playerTeam.won && (
                         <div
                             className={
                                 'font-inter text-label-medium flex w-full items-center justify-center text-red-300 rounded-lg ring ring-1 ring-red-600 px-3 py-2 bg-red-800/20'
@@ -38,7 +38,7 @@ export const MatchScoreComponent = ({ history }: { history: MatchHistory }) => {
                             <p>Lost</p>
                         </div>
                     )}
-                    {history.playerTeam?.won && (
+                    {match.playerTeam.won && (
                         <div
                             className={
                                 'font-inter text-label-medium flex w-full items-center justify-center text-green-500 rounded-lg ring ring-1 ring-green-600 px-3 py-2 bg-green-800/20'
