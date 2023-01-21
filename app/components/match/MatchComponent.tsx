@@ -22,7 +22,9 @@ export const MatchComponent = ({ match }: { match: Match }) => {
                                     </p>
                                 </div>
                                 {index === 0 && (
-                                    <p key={index} className={'text-white font-inter font-bold'}>
+                                    <p
+                                        key={team.numPoints}
+                                        className={'text-white font-inter font-bold'}>
                                         -
                                     </p>
                                 )}

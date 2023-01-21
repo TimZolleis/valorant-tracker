@@ -27,6 +27,7 @@ export class ValorantPlayerApiClient {
     ): Promise<ValorantPlayerMMR> {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(PLAYER_ENDPOINT.MMR(puuid)),
+            //@ts-ignore
             {
                 params: {
                     ...(competitive ? { queue: 'competitive' } : {}),
@@ -42,7 +43,7 @@ export class ValorantPlayerApiClient {
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 PLAYER_ENDPOINT.MMR(puuid ? puuid : this.client.user.puuid)
             ),
-            {},
+            undefined,
             {
                 key: 'mmr',
                 expiration: 900,

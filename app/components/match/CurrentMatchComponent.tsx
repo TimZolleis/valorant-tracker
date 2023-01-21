@@ -1,7 +1,7 @@
 import { NoCurrentMatchComponent } from '~/components/match/NoCurrentMatchComponent';
 import { useFetcher } from '@remix-run/react';
 import { useEffect, useState } from 'react';
-import { LiveMatchLoaderData } from '~/routes/match/live';
+import Live, { LiveMatchLoaderData } from '~/routes/match/live';
 import { PregameComponent } from '~/components/match/current/PregameComponent';
 
 type GameStatus = 'unknown' | 'pregame' | 'coregame';

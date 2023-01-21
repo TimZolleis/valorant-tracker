@@ -1,12 +1,8 @@
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { WhiteAreaGraph } from '~/components/common/graph/WhiteAreaGraph';
 import { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import { DateTime } from 'luxon';
-import { useFetcher, useMatches } from '@remix-run/react';
-import { ApiCurrentCompetitiveTier } from '~/routes/api/tiers/current';
-import { useEffect } from 'react';
-import { useMatchesData } from '~/utils/hooks/user';
 import { ValorantMediaCompetitiveTier } from '~/models/interfaces/valorant-media/ValorantMediaCompetitiveTier';
+import { useMatchesData } from '~/utils/hooks/matches';
 
 type TierData = {
     tier: number;

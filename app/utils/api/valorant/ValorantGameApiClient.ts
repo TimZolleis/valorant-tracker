@@ -1,5 +1,4 @@
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import type {
     AuthenticationTokens,

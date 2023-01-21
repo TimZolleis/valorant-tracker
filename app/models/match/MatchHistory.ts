@@ -8,8 +8,4 @@ export class MatchHistory {
             this.matches = matches;
         }
     }
-
-    addMatch(match: Match) {
-        this.matches.push(match);
-    }
 }

@@ -104,6 +104,7 @@ export async function getPlayerDetails(user: AuthenticatedValorantUser, puuid: P
         getPlayerStatistics(user, puuid),
         getMatchHistory(user, puuid),
     ]);
+    console.log('Player details fetched');
     return new Player(playerDetails, matchHistory, competitiveUpdate, statistics);
 }
 

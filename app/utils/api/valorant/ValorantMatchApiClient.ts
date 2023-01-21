@@ -16,6 +16,11 @@ import { NoPreGameException } from '~/models/exception/game/NoPreGameException';
 import { NoCoreGameException } from '~/models/exception/game/NoCoreGameException';
 import { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
 import { ValorantMatchHistory } from '~/models/interfaces/valorant-ingame/ValorantMatchHistory';
+import {
+    getAuthorizationHeader,
+    getDefaultHeaders,
+    getEntitlementsHeader,
+} from '~/utils/axios/axios.server';
 
 export class ValorantMatchApiClient {
     client: ValorantGameApiClient;
@@ -30,10 +35,12 @@ export class ValorantMatchApiClient {
         numberOfGames: number = 2
     ): Promise<ValorantMatchHistory> {
         const startIndex = 0;
+
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_MATCH_HISTORY(puuid)
             ),
+            // @ts-ignore
             {
                 params: {
                     queue: queue,
@@ -53,7 +60,7 @@ export class ValorantMatchApiClient {
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.MATCH_DETAILS(matchId)
             ),
-            {},
+            undefined,
             {
                 key: 'matchdetails',
                 expiration: 3600 * 12,
@@ -118,6 +125,7 @@ export class ValorantMatchApiClient {
             new RiotRequest(this.client.user.region).buildBaseUrl(
                 MATCH_ENDPOINTS.PLAYER_COMPETITIVE_UPDATES(puuid)
             ),
+            // @ts-ignore
             {
                 params: {
                     queue: queue,

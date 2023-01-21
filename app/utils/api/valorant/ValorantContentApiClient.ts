@@ -25,7 +25,7 @@ export class ValorantContentApiClient {
     async getContent(): Promise<ValorantContent> {
         return await this.client.get(
             new RiotRequest(this.client.user.region).buildSharedUrl(CONTENT_ENDPOINTS.CONTENT),
-            {},
+            undefined,
             {
                 key: 'content',
                 expiration: 3600,

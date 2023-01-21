@@ -22,8 +22,6 @@ export const NoCurrentMatchComponent = ({
         const interval = setInterval(() => {
             if (remainingTime > 0) {
                 setRemainingTime(remainingTime - 1);
-            } else {
-                checkForGame();
             }
         }, 1000);
 

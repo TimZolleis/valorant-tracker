@@ -1,7 +1,7 @@
-import { useOptionalUser } from '~/utils/hooks/user';
 import { useFetcher } from '@remix-run/react';
 import { useEffect } from 'react';
 import type { LoadoutLoaderData } from '~/routes/api.user.loadout';
+import { useOptionalUser } from '~/utils/hooks/matches';
 
 export const Profile = () => {
     const user = useOptionalUser();

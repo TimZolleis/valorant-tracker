@@ -1,17 +1,9 @@
 import type { LoaderFunction, MetaFunction } from '@remix-run/node';
-import {
-    Links,
-    LiveReload,
-    Meta,
-    Outlet,
-    Scripts,
-    ScrollRestoration,
-    useLoaderData,
-} from '@remix-run/react';
-import styles from './styles/app.css';
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import DefaultLayout from '~/components/layout/DefaultLayout';
+import styles from './styles/app.css';
 import { getUserFromSession } from '~/utils/session/session.server';
-import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
+import { jSXAttribute } from '@babel/types';
 import { json } from '@remix-run/node';
 
 export const meta: MetaFunction = () => ({
@@ -24,17 +16,15 @@ export function links() {
     return [{ rel: 'stylesheet', href: styles }];
 }
 
-type LoaderData = {
-    user?: AuthenticatedValorantUser;
-};
-export const loader: LoaderFunction = async ({ request }) => {
-    const user = await getUserFromSession(request);
+export const loader: LoaderFunction = ({ request }) => {
+    const user = getUserFromSession(request);
 
-    return json<LoaderData>({ user });
+    return json({
+        user,
+    });
 };
 
 export default function App() {
-    const user = useLoaderData<LoaderData>();
     return (
         <html lang='en'>
             <head>
