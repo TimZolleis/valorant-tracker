@@ -1,17 +1,21 @@
 import { useNavigate } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import is from '@sindresorhus/is';
+import set = is.set;
 
-export function useReauthenticationPromise<T>(promise: Promise<T>) {
-    const navigate = useNavigate();
-    useEffect(() => {
-        promise.catch((err) => {
-            console.log('Error', err);
-            if (err instanceof Response && err.headers.get('location')) {
-                const url = err.headers.get('location');
-                if (url) {
-                    navigate(url);
-                }
+export const useReauthentication = <T>(promise: Promise<T>) => {
+    const [hasRedirected, setHasRedirected] = useState<boolean>(false);
+    promise
+        .catch((err) => {
+            return true;
+        })
+        .then((res) => {
+            if (typeof res === 'boolean') {
+                setHasRedirected(res);
             }
         });
-    }, []);
-}
+    const navigate = useNavigate();
+    useEffect(() => {
+        console.log(hasRedirected);
+    }, [hasRedirected]);
+};

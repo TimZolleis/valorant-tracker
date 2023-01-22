@@ -16,6 +16,7 @@ import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { clientConfig } from '~/config/clientConfig';
 import { ROUTES } from '~/config/Routes';
 import { CacheConfig, constructKey, getRedisInstance } from '~/utils/api/redis/RedisClient';
+import { ReauthenticationRequiredException } from '~/models/exception/reauthentication/ReauthenticationRequiredException';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -68,7 +69,7 @@ export class ValorantGameApiClient {
             })
             .catch(async (error) => {
                 if (error.response?.status === 400) {
-                    throw redirect('/reauth');
+                    throw new ReauthenticationRequiredException().handle();
                 }
                 if (error.response?.status >= 500) {
                     if (!isFallback) {
@@ -77,7 +78,7 @@ export class ValorantGameApiClient {
                         throw new RiotServicesUnavailableException();
                     }
                 }
-                console.log('Error', error);
+
                 throw new Error('Get failed');
             });
         if (cacheConfig) {

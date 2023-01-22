@@ -12,7 +12,7 @@ export const NoCurrentMatchComponent = ({
 }) => {
     const fetcher = useFetcher();
     const checkForGame = () => {
-        onUpdate();
+        // onUpdate();
         setRemainingTime(10);
     };
 

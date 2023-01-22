@@ -73,9 +73,9 @@ export class RedisClient {
     }
 
     async getValue(url: string, cacheConfig: CacheConfig) {
+        console.log('Getting from cache', url);
         return this.client.get(this.constructKey(url, cacheConfig));
     }
-
     async disconnect() {
         await this.client.disconnect();
     }
