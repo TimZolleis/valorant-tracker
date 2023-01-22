@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const Modal = ({
     showModal,
@@ -13,13 +14,28 @@ export const Modal = ({
 }) => {
     return (
         <>
-            {showModal ? (
-                <>
-                    <main
+            <AnimatePresence>
+                {showModal ? (
+                    <motion.div
+                        key={showModal.toString()}
                         onClick={() => toggleModal()}
                         className={
                             'bg-black bg-opacity-30 p-3 fixed lg:px-60 left-0 top-0 right-0 bottom-0 flex flex-col items-center justify-center'
-                        }>
+                        }
+                        layout
+                        initial={{
+                            y: 300,
+                        }}
+                        animate={{
+                            y: 0,
+                            transition: {
+                                duration: 0.1,
+                                type: 'spring',
+                                damping: 25,
+                                stiffness: 500,
+                            },
+                        }}
+                        exit={{ y: 500, opacity: 0 }}>
                         <div
                             onClick={(e) => e.stopPropagation()}
                             className={
@@ -33,15 +49,16 @@ export const Modal = ({
                             </div>
                             <div className={'mt-5'}>{children}</div>
                         </div>
-                    </main>
-                </>
-            ) : null}
+                    </motion.div>
+                ) : null}
+            </AnimatePresence>
         </>
     );
 };
 
 export function useModal(showInitial: boolean = false) {
     const [showModal, setShowModal] = useState(showInitial);
+
     function toggleModal() {
         setShowModal(!showModal);
     }

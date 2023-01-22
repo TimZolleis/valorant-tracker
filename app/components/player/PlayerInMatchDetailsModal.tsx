@@ -2,6 +2,8 @@ import { PlayerInMatch } from '~/models/player/PlayerDetails';
 import { useSearchParams } from '@remix-run/react';
 import { Modal, useModal } from '~/components/common/page/Modal';
 import { useEffect, useState } from 'react';
+import { WhiteButton } from '~/components/form/button/WhiteButton';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const PlayerInMatchDetailsModal = () => {
     const { showModal, toggleModal } = useModal(true);
@@ -33,18 +35,23 @@ export const PlayerInMatchDetailsModal = () => {
 
     return (
         <div>
-            <Modal
-                showModal={showModal}
-                toggleModal={toggleModal}
-                titleElement={
-                    <SelectPlayerElement
-                        playerName={players[parseInt(index)].playerName}
-                        gameTag={players[parseInt(index)].gameTag}
-                        maxIndex={players.length - 1}
-                    />
-                }>
-                <p className={'text-white'}>Test Modal</p>
-            </Modal>
+            <WhiteButton onClick={toggleModal} doesSubmit={false}>
+                <p>Toggle modal</p>
+            </WhiteButton>
+            <AnimatePresence>
+                <Modal
+                    showModal={showModal}
+                    toggleModal={toggleModal}
+                    titleElement={
+                        <SelectPlayerElement
+                            playerName={players[parseInt(index)].playerName}
+                            gameTag={players[parseInt(index)].gameTag}
+                            maxIndex={players.length - 1}
+                        />
+                    }>
+                    <p className={'text-white'}>Test Modal</p>
+                </Modal>
+            </AnimatePresence>
         </div>
     );
 };
