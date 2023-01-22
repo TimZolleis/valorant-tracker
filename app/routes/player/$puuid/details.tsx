@@ -1,9 +1,11 @@
-import { defer, LoaderFunction } from '@remix-run/node';
+import { defer, LoaderFunction, redirect } from '@remix-run/node';
 import ContentContainer from '~/components/common/page/ContentContainer';
+import { CardContainer } from '~/components/common/page/CardContainer';
 import { CardLoadingSkeleton } from '~/components/common/loading/CardLoadingSkeleton';
 import { PageHeader } from '~/components/common/page/PageHeader';
 import { requireUser } from '~/utils/session/session.server';
 import { checkPuuid } from '~/utils/player/puuid';
+import { ROUTES } from '~/config/Routes';
 import { getPlayerDetails } from '~/utils/player/player.server';
 import { Player } from '~/models/player/PlayerDetails';
 import { Await, useLoaderData } from '@remix-run/react';
@@ -11,7 +13,7 @@ import { Suspense } from 'react';
 import { PlayerDetailsLoadingSkeleton } from '~/components/common/loading/PlayerDetailsLoadingSkeleton';
 import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
 import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
-import { PlayerStatisticsComponent } from '~/components/player/statistics/PlayerStatisticsComponent';
+import { DefaultTag } from '~/components/tag/DefaultTag';
 
 type LoaderData = {
     playerPromise: Promise<Player>;
@@ -38,12 +40,15 @@ const PlayerDetailsPage = () => {
             <Suspense fallback={<PlayerDetailsLoadingSkeleton />}>
                 <Await<Promise<Player>> resolve={playerPromise}>{(player) => <div>lol</div>}</Await>
             </Suspense>
-            <Suspense>
-                <Await<Promise<Player>> resolve={playerPromise}>
-                    {(player) => <PlayerStatisticsComponent player={player} />}
-                </Await>
-            </Suspense>
-            <div className={'grid grid-cols-1 gap-2 md:grid-cols-2 mt-2'}>
+            <div className={"grid grid-cols-2 md:grid-cols-4"}>
+                <Suspense>
+                    <Await resolve={playerPromise}>
+                        {(player) => (
+                        )}
+                    </Await>
+                </Suspense>
+            </div>
+            <div className={'grid grid-cols-1 gap-5 md:grid-cols-2'}>
                 <ContentContainer>
                     <Suspense fallback={<CardLoadingSkeleton />}>
                         <Await<Promise<Player>>
@@ -75,6 +80,9 @@ const PlayerDetailsPage = () => {
                     </Suspense>
                 </ContentContainer>
             </div>
+            <ContentContainer>
+                <CardLoadingSkeleton />
+            </ContentContainer>
         </div>
     );
 };

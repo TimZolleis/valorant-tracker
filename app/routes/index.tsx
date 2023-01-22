@@ -46,7 +46,13 @@ export default function Index() {
                         }>
                         <ContentContainer>
                             <Suspense fallback={<CardLoadingSkeleton />}>
-                                <Await<Promise<Player>> resolve={playerPromise}>
+                                <Await<Promise<Player>>
+                                    resolve={playerPromise}
+                                    errorElement={
+                                        <div>
+                                            <p className={'text-white'}>Error lol</p>
+                                        </div>
+                                    }>
                                     {(player) => (
                                         <MatchHistoryComponent history={player.matchHistory} />
                                     )}
@@ -55,7 +61,13 @@ export default function Index() {
                         </ContentContainer>
                         <ContentContainer>
                             <Suspense fallback={<CardLoadingSkeleton />}>
-                                <Await<Promise<Player>> resolve={playerPromise}>
+                                <Await<Promise<Player>>
+                                    resolve={playerPromise}
+                                    errorElement={
+                                        <div>
+                                            <p className={'text-white'}>Error lol</p>
+                                        </div>
+                                    }>
                                     {(player) => (
                                         <CompetitiveUpdateComponent
                                             competitiveUpdate={player.competitiveUpdate}
