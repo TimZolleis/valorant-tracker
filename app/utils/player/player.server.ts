@@ -149,18 +149,17 @@ async function getTopRank(
     seasonalInfo: ValorantSeasonalInfoBySeasonID
 ) {
     let topTier = 0;
+
     const seasonIds = Object.keys(seasonalInfo);
-    if (seasonIds === null || seasonIds === undefined) {
-        console.log('Season undefined!');
-    }
     seasonIds.forEach((seasonId) => {
         const season = seasonalInfo[seasonId];
-
-        Object.keys(season.WinsByTier).forEach((tier) => {
-            if (parseInt(tier) > topTier) {
-                topTier = parseInt(tier);
-            }
-        });
+        if (season.WinsByTier) {
+            Object.keys(season.WinsByTier).forEach((tier) => {
+                if (parseInt(tier) > topTier) {
+                    topTier = parseInt(tier);
+                }
+            });
+        }
     });
     return await findTier(user, topTier);
 }

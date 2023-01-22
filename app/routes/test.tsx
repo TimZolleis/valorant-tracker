@@ -1,6 +1,6 @@
 import { defer, json, LoaderFunction } from '@remix-run/node';
-import { Suspense } from 'react';
-import { Await, Outlet, useAsyncValue, useLoaderData } from '@remix-run/react';
+import { Modal, useModal } from '~/components/common/page/Modal';
+import { PlayerInMatchDetailsModal } from '~/components/player/PlayerInMatchDetailsModal';
 
 export const loader: LoaderFunction = async () => {
     const testData = 'TestData from Loader 1';
@@ -10,14 +10,10 @@ export const loader: LoaderFunction = async () => {
 };
 
 const TestPage = () => {
-    const data = useLoaderData();
+    const { showModal, toggleModal } = useModal(true);
     return (
         <>
-            <div className={'bg-red-500 p-3'}>
-                <p className={'text-white'}>Static from loader 1</p>
-                <div className={'text-white'}>{data.testData}</div>
-                <Outlet />
-            </div>
+            <PlayerInMatchDetailsModal />
         </>
     );
 };

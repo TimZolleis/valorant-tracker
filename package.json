@@ -27,8 +27,6 @@
     "react-hot-toast": "^2.4.0",
     "react-use-measure": "^2.1.1",
     "recharts": "^2.3.2",
-    "redis": "^4.5.1",
-    "redis-connection-pool": "^4.0.1",
     "tough-cookie": "^4.1.2"
   },
   "devDependencies": {

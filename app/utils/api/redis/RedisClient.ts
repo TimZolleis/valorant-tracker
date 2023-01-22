@@ -1,8 +1,6 @@
-import type { RedisClientType } from 'redis';
 import process from 'process';
 import Redis from 'ioredis';
 import { EnvironmentVariableNotPresentException } from '~/models/exception/general/EnvironmentVariableNotPresentException';
-import { red } from 'kleur/colors';
 
 export type CacheConfig = {
     key: string;
@@ -52,10 +50,11 @@ export class RedisConfig {
     }
 }
 
-export class RedisClient {
+class RedisClient {
     client: Redis;
 
     constructor(redisInstance: Redis) {
+        console.log('New redis client instantiated');
         this.client = redisInstance;
     }
 
@@ -73,7 +72,7 @@ export class RedisClient {
     }
 
     async getValue(url: string, cacheConfig: CacheConfig) {
-        console.log('Getting from cache', url);
+        // console.log('Getting from cache', url);
         return this.client.get(this.constructKey(url, cacheConfig));
     }
     async disconnect() {
@@ -88,20 +87,22 @@ export function constructKey(url: string, cacheConfig: CacheConfig) {
 let instance: RedisClient | null = null;
 
 export const getRedisInstance = async (): Promise<RedisClient> => {
+    console.log('Getting new Redis instance');
     if (!instance) {
-        await redisClient.client('KILL', 'type', 'normal');
-        instance = new RedisClient(redisClient);
+        await getNewRedisClient().client('KILL', 'type', 'normal');
+        instance = new RedisClient(getNewRedisClient());
     }
     return instance;
 };
 const config = new RedisConfig('redis');
-// @ts-ignore
-const redisClient = new Redis({
-    port: config.databasePort,
-    host: config.databaseUrl,
-    username: 'default',
-    password: config.password,
-    retryStrategy: () => false,
-});
 
-export default redisClient;
+function getNewRedisClient() {
+    console.log('Instantiating redis instance');
+    // @ts-ignore
+    return new Redis({
+        port: config.databasePort,
+        host: config.databaseUrl,
+        username: 'default',
+        password: config.password,
+    });
+}
