@@ -6,7 +6,7 @@ import { Player, PlayerInMatch } from '~/models/player/PlayerDetails';
 
 export const PlayerComponent = ({ player }: { player: PlayerInMatch }) => {
     return (
-        <div className={'flex w-full ring ring-1 ring-gray-600 p-3 rounded-xl'}>
+        <div className={'flex w-full ring ring-1 ring-gray-600 hover:ring-gray-400 p-3 rounded-xl'}>
             <div className={'flex items-start gap-3'}>
                 <div className={'ring ring-1 ring-gray-800 p-2 rounded-lg bg-mud'}>
                     <img

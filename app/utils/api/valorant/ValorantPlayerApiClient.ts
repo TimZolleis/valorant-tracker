@@ -3,7 +3,10 @@ import type { ValorantPlayerLoadout } from '~/models/interfaces/valorant-ingame/
 import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import { RiotRequest } from '~/utils/request/url.server';
 import { ValorantGameApiClient } from '~/utils/api/valorant/ValorantGameApiClient';
-import type { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
+import type {
+    ValorantCompetitiveUpdate,
+    ValorantMatch,
+} from '~/models/interfaces/valorant-ingame/ValorantCompetitiveUpdate';
 import { ValorantPlayerMMR } from '~/models/interfaces/valorant-ingame/ValorantPlayerMMR';
 import { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
 
@@ -24,9 +27,11 @@ export class ValorantPlayerApiClient {
     async getLatestCompetitiveUpdate(
         competitive: boolean = false,
         puuid: Puuid
-    ): Promise<ValorantPlayerMMR> {
-        return await this.client.get(
-            new RiotRequest(this.client.user.region).buildBaseUrl(PLAYER_ENDPOINT.MMR(puuid)),
+    ): Promise<ValorantMatch> {
+        const response: ValorantCompetitiveUpdate = await this.client.get(
+            new RiotRequest(this.client.user.region).buildBaseUrl(
+                PLAYER_ENDPOINT.COMPETITIVE_UPDATES(puuid)
+            ),
             //@ts-ignore
             {
                 params: {
@@ -36,6 +41,7 @@ export class ValorantPlayerApiClient {
                 },
             }
         );
+        return response.Matches[0];
     }
 
     async getMMR(puuid?: string): Promise<ValorantPlayerMMR> {

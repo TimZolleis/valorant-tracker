@@ -1,3 +1,4 @@
+import React from 'react';
 import { Match } from '~/models/match/Match';
 
 export const MatchComponent = ({ match }: { match: Match }) => {
@@ -11,7 +12,7 @@ export const MatchComponent = ({ match }: { match: Match }) => {
                     {match.details.teams
                         .sort((a, b) => (b.teamId === match.playerTeam.teamId ? 1 : -1))
                         .map((team, index) => (
-                            <>
+                            <React.Fragment key={team.teamId}>
                                 <div key={team.teamId}>
                                     <p
                                         key={team.teamId}
@@ -28,7 +29,7 @@ export const MatchComponent = ({ match }: { match: Match }) => {
                                         -
                                     </p>
                                 )}
-                            </>
+                            </React.Fragment>
                         ))}
                 </div>
                 <div>

@@ -14,10 +14,8 @@ import { RiotServicesUnavailableException } from '~/models/exception/riot/RiotSe
 import { RiotRequest } from '~/utils/request/url.server';
 import { RiotApiClientConfig } from '~/models/static/RiotApiClientConfig';
 import { clientConfig } from '~/config/clientConfig';
-import { CacheConfig, RedisClient } from '~/utils/api/redis/RedisClient';
-import * as url from 'url';
-import { DateTime } from 'luxon';
 import { ROUTES } from '~/config/Routes';
+import { CacheConfig, constructKey, getRedisInstance } from '~/utils/api/redis/RedisClient';
 
 export class ValorantGameApiClient {
     axios: AxiosInstance;
@@ -79,7 +77,8 @@ export class ValorantGameApiClient {
                         throw new RiotServicesUnavailableException();
                     }
                 }
-                throw new Error(error.message);
+                console.log('Error', error);
+                throw new Error('Get failed');
             });
         if (cacheConfig) {
             await this.setCache(request.getEndpoint(), JSON.stringify(result), cacheConfig);
@@ -125,15 +124,13 @@ export class ValorantGameApiClient {
     }
 
     private async getCache(url: string, cacheConfig: CacheConfig) {
-        const client = await new RedisClient().init();
-        const value = await client.getValue(url, cacheConfig);
-        await client.disconnect();
-        return value;
+        const client = await getRedisInstance();
+        const result = await client.getValue(url, cacheConfig);
+        return result;
     }
 
     private async setCache(url: string, value: string, cacheConfig: CacheConfig) {
-        const client = await new RedisClient().init();
-        await client.setValue(url, value, cacheConfig);
-        await client.disconnect();
+        const instance = await getRedisInstance();
+        await instance.setValue(url, value, cacheConfig);
     }
 }

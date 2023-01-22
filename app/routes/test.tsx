@@ -1,12 +1,11 @@
-import { defer, LoaderFunction } from '@remix-run/node';
+import { defer, json, LoaderFunction } from '@remix-run/node';
 import { Suspense } from 'react';
-import { Await, useAsyncValue, useLoaderData } from '@remix-run/react';
+import { Await, Outlet, useAsyncValue, useLoaderData } from '@remix-run/react';
 
-export const loader: LoaderFunction = () => {
-    const testPromise = new Promise((res) => setTimeout(() => res('TestPromise'), 1000));
-
-    return defer({
-        testPromise,
+export const loader: LoaderFunction = async () => {
+    const testData = 'TestData from Loader 1';
+    return json({
+        testData,
     });
 };
 
@@ -14,18 +13,13 @@ const TestPage = () => {
     const data = useLoaderData();
     return (
         <>
-            <Suspense>
-                <Await resolve={data.testPromise}>
-                    <TestComponent />
-                </Await>
-            </Suspense>
+            <div className={'bg-red-500 p-3'}>
+                <p className={'text-white'}>Static from loader 1</p>
+                <div className={'text-white'}>{data.testData}</div>
+                <Outlet />
+            </div>
         </>
     );
 };
 
 export default TestPage;
-
-function TestComponent() {
-    const value = useAsyncValue();
-    return <p className={'text-white'}>{value}</p>;
-}

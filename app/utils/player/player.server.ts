@@ -62,7 +62,7 @@ export async function getCompetitiveUpdate(
 
 async function getMatchHistory(user: AuthenticatedValorantUser, puuid: Puuid) {
     const matchIds = await new ValorantMatchApiClient(user)
-        .getMatchHistory(puuid, QUEUE.COMPETITIVE, 20)
+        .getMatchHistory(puuid, QUEUE.COMPETITIVE, 5)
         .then((res) => res.History);
 
     const matches = await Promise.all(
@@ -98,13 +98,13 @@ export async function getPlayerInMatchDetails(
 }
 
 export async function getPlayerDetails(user: AuthenticatedValorantUser, puuid: Puuid) {
+    console.log('Fetching player details...');
     const [playerDetails, competitiveUpdate, statistics, matchHistory] = await Promise.all([
         getPlayerName(user, puuid),
-        getCompetitiveUpdate(user, puuid, 20),
+        getCompetitiveUpdate(user, puuid, 10),
         getPlayerStatistics(user, puuid),
         getMatchHistory(user, puuid),
     ]);
-    console.log('Player details fetched');
     return new Player(playerDetails, matchHistory, competitiveUpdate, statistics);
 }
 

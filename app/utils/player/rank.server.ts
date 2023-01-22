@@ -32,9 +32,7 @@ export async function getPlayerRank(
             user
         );
         const playerApi = new ValorantPlayerApiClient(user);
-        const latestCompetitiveUpdate = await playerApi
-            .getMMR(puuid)
-            .then((res) => res.LatestCompetitiveUpdate);
+        const latestCompetitiveUpdate = await playerApi.getLatestCompetitiveUpdate(true, puuid);
         const tier = await findTier(user, latestCompetitiveUpdate.TierAfterUpdate);
         const rr = latestCompetitiveUpdate.RankedRatingAfterUpdate;
         return {
