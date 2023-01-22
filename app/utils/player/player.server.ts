@@ -120,7 +120,7 @@ export async function getPlayersInMatchDetails(
 }
 
 export async function getPlayerStatistics(user: AuthenticatedValorantUser, puuid: Puuid) {
-    const playerMMR = await new ValorantPlayerApiClient(user).getMMR();
+    const playerMMR = await new ValorantPlayerApiClient(user).getMMR(puuid);
     const competitiveSeasons = playerMMR.QueueSkills.competitive.SeasonalInfoBySeasonID;
     const seasonalStatistics = await Promise.all(
         Object.keys(competitiveSeasons).map(async (seasonId) => {
@@ -150,8 +150,12 @@ async function getTopRank(
 ) {
     let topTier = 0;
     const seasonIds = Object.keys(seasonalInfo);
+    if (seasonIds === null || seasonIds === undefined) {
+        console.log('Season undefined!');
+    }
     seasonIds.forEach((seasonId) => {
         const season = seasonalInfo[seasonId];
+
         Object.keys(season.WinsByTier).forEach((tier) => {
             if (parseInt(tier) > topTier) {
                 topTier = parseInt(tier);

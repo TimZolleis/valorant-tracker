@@ -78,7 +78,9 @@ export class ValorantGameApiClient {
                         throw new RiotServicesUnavailableException();
                     }
                 }
-
+                if (error.response?.status === 429) {
+                    console.log('Too fast!');
+                }
                 throw new Error('Get failed');
             });
         if (cacheConfig) {

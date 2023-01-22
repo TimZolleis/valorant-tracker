@@ -44,6 +44,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
             pregame: match,
         });
     } catch (exception: any) {
+        console.log(exception);
         console.log('Error in pregame', exception.message);
         error = exception.message;
     }

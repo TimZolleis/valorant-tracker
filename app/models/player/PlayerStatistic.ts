@@ -26,9 +26,9 @@ export class TotalStatistic {
     gamesPlayed: number;
     gamesWon: number;
     constructor(winRate: number, gamesPlayed: number, gamesWon: number) {
-        calculateWinrate(this.gamesWon, this.gamesPlayed);
         this.gamesPlayed = gamesPlayed;
         this.gamesWon = gamesWon;
+        this.winRate = calculateWinrate(gamesWon, gamesPlayed);
     }
 }
 
