@@ -11,6 +11,9 @@ import { Player } from '~/models/player/PlayerDetails';
 import { Await, useLoaderData } from '@remix-run/react';
 import { Suspense } from 'react';
 import { PlayerDetailsLoadingSkeleton } from '~/components/common/loading/PlayerDetailsLoadingSkeleton';
+import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
+import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
+import { DefaultTag } from '~/components/tag/DefaultTag';
 
 type LoaderData = {
     playerPromise: Promise<Player>;
@@ -34,21 +37,49 @@ const PlayerDetailsPage = () => {
     return (
         <div>
             <PageHeader text={'Player Details'} />
-            <ContentContainer>
-                <CardContainer
-                    headline={'Player Details'}
-                    subtext={'See details about a player'}
-                    imageUrl={'/resources/img/svg/trophy.svg'}>
-                    <div>
-                        <p className={'text-white'}>Player details!</p>
-                    </div>
-                </CardContainer>
-            </ContentContainer>
-
-            <Suspense fallback={<PlayerDetailsLoadingSkeleton />}></Suspense>
-            <Await<Promise<Player>> resolve={playerPromise}>
-                {(player) => <div>{player.details.nameService.GameName}</div>}
-            </Await>
+            <Suspense fallback={<PlayerDetailsLoadingSkeleton />}>
+                <Await<Promise<Player>> resolve={playerPromise}>{(player) => <div>lol</div>}</Await>
+            </Suspense>
+            <div className={"grid grid-cols-2 md:grid-cols-4"}>
+                <Suspense>
+                    <Await resolve={playerPromise}>
+                        {(player) => (
+                        )}
+                    </Await>
+                </Suspense>
+            </div>
+            <div className={'grid grid-cols-1 gap-5 md:grid-cols-2'}>
+                <ContentContainer>
+                    <Suspense fallback={<CardLoadingSkeleton />}>
+                        <Await<Promise<Player>>
+                            resolve={playerPromise}
+                            errorElement={
+                                <div>
+                                    <p className={'text-white'}>Error lol</p>
+                                </div>
+                            }>
+                            {(player) => <MatchHistoryComponent history={player.matchHistory} />}
+                        </Await>
+                    </Suspense>
+                </ContentContainer>
+                <ContentContainer>
+                    <Suspense fallback={<CardLoadingSkeleton />}>
+                        <Await<Promise<Player>>
+                            resolve={playerPromise}
+                            errorElement={
+                                <div>
+                                    <p className={'text-white'}>Error lol</p>
+                                </div>
+                            }>
+                            {(player) => (
+                                <CompetitiveUpdateComponent
+                                    competitiveUpdate={player.competitiveUpdate}
+                                />
+                            )}
+                        </Await>
+                    </Suspense>
+                </ContentContainer>
+            </div>
             <ContentContainer>
                 <CardLoadingSkeleton />
             </ContentContainer>

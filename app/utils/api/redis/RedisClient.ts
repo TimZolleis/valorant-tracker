@@ -85,7 +85,7 @@ export function constructKey(url: string, cacheConfig: CacheConfig) {
     return `${url}-${cacheConfig.key}`;
 }
 
-var instance: RedisClient | null = null;
+let instance: RedisClient | null = null;
 
 export const getRedisInstance = async (): Promise<RedisClient> => {
     if (!instance) {
