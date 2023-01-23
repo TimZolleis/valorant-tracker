@@ -705,12 +705,12 @@ video {
   gap: 1.25rem;
 }
 
-.gap-3 {
-  gap: 0.75rem;
-}
-
 .gap-1 {
   gap: 0.25rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .space-y-5 > :not([hidden]) ~ :not([hidden]) {
@@ -941,12 +941,12 @@ video {
   font-size: 22px;
 }
 
-.text-label-small {
-  font-size: 12px;
-}
-
 .text-headline-small {
   font-size: 24px;
+}
+
+.text-label-small {
+  font-size: 12px;
 }
 
 .text-headline-large {

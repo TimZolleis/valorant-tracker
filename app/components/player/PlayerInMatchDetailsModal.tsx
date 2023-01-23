@@ -1,37 +1,20 @@
-import { PlayerInMatch } from '~/models/player/PlayerDetails';
+import { Player, PlayerInMatch } from '~/models/player/PlayerDetails';
 import { useSearchParams } from '@remix-run/react';
 import { Modal, useModal } from '~/components/common/page/Modal';
 import { useEffect, useState } from 'react';
 import { WhiteButton } from '~/components/form/button/WhiteButton';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export const PlayerInMatchDetailsModal = () => {
+export const PlayerInMatchDetailsModal = ({ players }: { players: PlayerInMatch[] }) => {
     const { showModal, toggleModal } = useModal(true);
     const [searchParams] = useSearchParams();
-
-    let index = searchParams.get('player');
-    if (!index) {
-        index = '0';
-    }
-
-    const players = [
-        {
-            playerName: 'RNG LOL',
-            gameTag: 'LOLZ',
-        },
-        {
-            playerName: 'RNG ljdglsk',
-            gameTag: '3221e',
-        },
-        {
-            playerName: 'RNG sadadsad',
-            gameTag: 'asfda',
-        },
-        {
-            playerName: 'RNG LOasdewwL',
-            gameTag: 'LOLZ',
-        },
-    ];
+    const [index, setIndex] = useState<number>(0);
+    useEffect(() => {
+        const searchParamsIndex = searchParams.get('index');
+        if (searchParamsIndex) {
+            setIndex(parseInt(searchParamsIndex));
+        }
+    }, [searchParams]);
 
     return (
         <div>
@@ -44,8 +27,7 @@ export const PlayerInMatchDetailsModal = () => {
                     toggleModal={toggleModal}
                     titleElement={
                         <SelectPlayerElement
-                            playerName={players[parseInt(index)].playerName}
-                            gameTag={players[parseInt(index)].gameTag}
+                            player={players[index]}
                             maxIndex={players.length - 1}
                         />
                     }>
@@ -56,15 +38,7 @@ export const PlayerInMatchDetailsModal = () => {
     );
 };
 
-export const SelectPlayerElement = ({
-    playerName,
-    gameTag,
-    maxIndex,
-}: {
-    playerName: string;
-    gameTag: string;
-    maxIndex: number;
-}) => {
+const SelectPlayerElement = ({ player, maxIndex }: { player: Player; maxIndex: number }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [index, setIndex] = useState(0);
     const subtractIndex = () => {
@@ -85,8 +59,8 @@ export const SelectPlayerElement = ({
     };
 
     return (
-        <div className={'w-full flex'}>
-            <div className={'flex'}>
+        <div className={'w-full flex gap-2'}>
+            <div className={'flex gap-1'}>
                 <button onClick={() => subtractIndex()}>
                     <img className={'h-6'} src='/resources/img/svg/chevron-left.svg' alt='' />
                 </button>
@@ -95,7 +69,8 @@ export const SelectPlayerElement = ({
                 </button>
             </div>
             <div className={'flex'}>
-                <p>{playerName}</p>#<p className={'text-gray-400'}>{gameTag}</p>
+                <p className={'text-headline-small'}>{player.details.nameService.GameName}</p>#
+                <p className={'text-gray-400'}>{player.details.nameService.TagLine}</p>
             </div>
         </div>
     );
