@@ -62,6 +62,7 @@ export class ValorantGameApiClient {
             }
         }
         const url = isFallback ? request.getFallback().getUrl() : request.getUrl();
+        console.log('Fetching', url);
         const result = await this.axios
             .get(url, config)
             .then((res) => {

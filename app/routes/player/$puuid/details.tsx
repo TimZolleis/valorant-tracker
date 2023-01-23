@@ -40,14 +40,7 @@ const PlayerDetailsPage = () => {
             <Suspense fallback={<PlayerDetailsLoadingSkeleton />}>
                 <Await<Promise<Player>> resolve={playerPromise}>{(player) => <div>lol</div>}</Await>
             </Suspense>
-            <div className={"grid grid-cols-2 md:grid-cols-4"}>
-                <Suspense>
-                    <Await resolve={playerPromise}>
-                        {(player) => (
-                        )}
-                    </Await>
-                </Suspense>
-            </div>
+            <div className={'grid grid-cols-2 md:grid-cols-4'}></div>
             <div className={'grid grid-cols-1 gap-5 md:grid-cols-2'}>
                 <ContentContainer>
                     <Suspense fallback={<CardLoadingSkeleton />}>

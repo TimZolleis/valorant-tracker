@@ -98,7 +98,6 @@ export async function getPlayerInMatchDetails(
 }
 
 export async function getPlayerDetails(user: AuthenticatedValorantUser, puuid: Puuid) {
-    console.log('Fetching player details...');
     const [playerDetails, competitiveUpdate, statistics, matchHistory] = await Promise.all([
         getPlayerName(user, puuid),
         getCompetitiveUpdate(user, puuid, 10),

@@ -1,6 +1,7 @@
 import process from 'process';
 import Redis from 'ioredis';
 import { EnvironmentVariableNotPresentException } from '~/models/exception/general/EnvironmentVariableNotPresentException';
+import { red } from 'kleur/colors';
 
 export type CacheConfig = {
     key: string;
@@ -50,11 +51,10 @@ export class RedisConfig {
     }
 }
 
-class RedisClient {
+export class RedisClient {
     client: Redis;
 
     constructor(redisInstance: Redis) {
-        console.log('New redis client instantiated');
         this.client = redisInstance;
     }
 
@@ -72,9 +72,10 @@ class RedisClient {
     }
 
     async getValue(url: string, cacheConfig: CacheConfig) {
-        // console.log('Getting from cache', url);
+        console.log('Getting from cache', url);
         return this.client.get(this.constructKey(url, cacheConfig));
     }
+
     async disconnect() {
         await this.client.disconnect();
     }
@@ -84,25 +85,32 @@ export function constructKey(url: string, cacheConfig: CacheConfig) {
     return `${url}-${cacheConfig.key}`;
 }
 
-let instance: RedisClient | null = null;
-
 export const getRedisInstance = async (): Promise<RedisClient> => {
-    console.log('Getting new Redis instance');
-    if (!instance) {
-        await getNewRedisClient().client('KILL', 'type', 'normal');
-        instance = new RedisClient(getNewRedisClient());
+    if (!global.__redisClient) {
+        global.__redisClient = new RedisClient(getClient());
     }
-    return instance;
+    return global.__redisClient;
 };
-const config = new RedisConfig('redis');
 
-function getNewRedisClient() {
-    console.log('Instantiating redis instance');
-    // @ts-ignore
+function getClient() {
+    const config = new RedisConfig('redis');
     return new Redis({
         port: config.databasePort,
         host: config.databaseUrl,
         username: 'default',
         password: config.password,
     });
+}
+
+export function globalCache() {
+    if (!global.__globalCache) {
+        global.__globalCache = new Map();
+    }
+    return global.__globalCache;
+}
+
+declare global {
+    // This preserves the Redis Client during development
+    var __redisClient: RedisClient | undefined;
+    var __globalCache: Map<string, string>;
 }

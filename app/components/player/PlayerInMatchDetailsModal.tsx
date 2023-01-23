@@ -1,20 +1,19 @@
 import { Player, PlayerInMatch } from '~/models/player/PlayerDetails';
-import { useSearchParams } from '@remix-run/react';
+import { useLocation, useSearchParams } from '@remix-run/react';
 import { Modal, useModal } from '~/components/common/page/Modal';
-import { useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { WhiteButton } from '~/components/form/button/WhiteButton';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export const PlayerInMatchDetailsModal = ({ players }: { players: PlayerInMatch[] }) => {
+export const PlayerInMatchDetailsModal = ({
+    players,
+    initialIndex,
+}: {
+    players: PlayerInMatch[];
+    initialIndex?: number;
+}) => {
     const { showModal, toggleModal } = useModal(true);
-    const [searchParams] = useSearchParams();
-    const [index, setIndex] = useState<number>(0);
-    useEffect(() => {
-        const searchParamsIndex = searchParams.get('index');
-        if (searchParamsIndex) {
-            setIndex(parseInt(searchParamsIndex));
-        }
-    }, [searchParams]);
+    const [index, setIndex] = useState<number>(initialIndex ? initialIndex : 0);
 
     return (
         <div>
@@ -27,6 +26,8 @@ export const PlayerInMatchDetailsModal = ({ players }: { players: PlayerInMatch[
                     toggleModal={toggleModal}
                     titleElement={
                         <SelectPlayerElement
+                            index={index}
+                            setIndex={setIndex}
                             player={players[index]}
                             maxIndex={players.length - 1}
                         />
@@ -38,9 +39,17 @@ export const PlayerInMatchDetailsModal = ({ players }: { players: PlayerInMatch[
     );
 };
 
-const SelectPlayerElement = ({ player, maxIndex }: { player: Player; maxIndex: number }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [index, setIndex] = useState(0);
+const SelectPlayerElement = ({
+    player,
+    index,
+    setIndex,
+    maxIndex,
+}: {
+    player: Player;
+    index: number;
+    setIndex: React.Dispatch<SetStateAction<number>>;
+    maxIndex: number;
+}) => {
     const subtractIndex = () => {
         if (index > 0) setIndex(index - 1);
     };
@@ -48,16 +57,6 @@ const SelectPlayerElement = ({ player, maxIndex }: { player: Player; maxIndex: n
     const addIndex = () => {
         if (index < maxIndex) setIndex(index + 1);
     };
-
-    useEffect(() => {
-        updateSearchParams();
-    }, [index]);
-
-    const updateSearchParams = () => {
-        searchParams.set('player', index.toString());
-        setSearchParams(searchParams);
-    };
-
     return (
         <div className={'w-full flex gap-2'}>
             <div className={'flex gap-1'}>
@@ -68,9 +67,11 @@ const SelectPlayerElement = ({ player, maxIndex }: { player: Player; maxIndex: n
                     <img className={'h-6'} src='/resources/img/svg/chevron-right.svg' alt='' />
                 </button>
             </div>
-            <div className={'flex'}>
-                <p className={'text-headline-small'}>{player.details.nameService.GameName}</p>#
-                <p className={'text-gray-400'}>{player.details.nameService.TagLine}</p>
+            <div className={'flex text-title-medium'}>
+                <p className={'text-title-medium'}>
+                    {player.details.nameService.GameName}{' '}
+                    <span className={'text-gray-400'}>#{player.details.nameService.TagLine}</span>
+                </p>
             </div>
         </div>
     );
