@@ -1,6 +1,7 @@
 import { ValorantMediaCharacterApi } from '~/utils/api/valorant-media/ValorantMediaCharacterApi';
 import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValorantUser';
 import type {
+    ValorantAllyTeam,
     ValorantPlayer,
     ValorantPlayerIdentity,
 } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
@@ -28,8 +29,9 @@ import {
     SeasonalStatistic,
     TotalStatistic,
 } from '~/models/player/PlayerStatistic';
+import { ValorantCoreGamePlayer } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
 
-export interface PlayerWithData extends ValorantPlayer {
+export interface PlayerWithData extends ValorantCoreGamePlayer {
     character?: ValorantMediaCharacter;
     rank: PlayerRank;
     PlayerIdentity: ValorantPlayerIdentity & { nameService: ValorantNameService };
@@ -80,7 +82,7 @@ async function getMatchHistory(user: AuthenticatedValorantUser, puuid: Puuid) {
 
 export async function getPlayerInMatchDetails(
     user: AuthenticatedValorantUser,
-    player: ValorantPlayer
+    player: ValorantCoreGamePlayer | ValorantPlayer
 ) {
     const [playerWithDetails, character] = await Promise.all([
         getPlayerDetails(user, player.Subject),
@@ -109,7 +111,7 @@ export async function getPlayerDetails(user: AuthenticatedValorantUser, puuid: P
 
 export async function getPlayersInMatchDetails(
     user: AuthenticatedValorantUser,
-    players: ValorantPlayer[]
+    players: ValorantCoreGamePlayer[] | ValorantPlayer[]
 ) {
     return await Promise.all(
         players.map(async (player) => {
@@ -176,4 +178,10 @@ function getTotalWinRate(competitiveSeasons: ValorantSeasonalInfoBySeasonID) {
         gamesWon,
         winRate: calculateWinrate(gamesWon, gamesPlayed),
     };
+}
+
+export function isCoreGamePlayer(
+    player: ValorantCoreGamePlayer | ValorantPlayer
+): player is ValorantCoreGamePlayer {
+    return (player as ValorantCoreGamePlayer).TeamID !== undefined;
 }

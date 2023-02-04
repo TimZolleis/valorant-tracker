@@ -6,10 +6,11 @@ import type { AuthenticatedValorantUser } from '~/models/user/AuthenticatedValor
 import type { ValorantPreGame } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import type { ValorantCoreGame } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
 import { getPlayersInMatchDetails, PlayerWithData } from '~/utils/player/player.server';
-import { TEST_MATCH } from '~/config/clientConfig';
+import { TEST_CORE_MATCH, TEST_MATCH } from '~/config/clientConfig';
 import { getMatchMap } from '~/utils/match/match.server';
 import { ValorantMediaMap } from '~/models/interfaces/valorant-media/ValorantMediaMap';
 import { PreGameMatch } from '~/models/match/PreGameMatch';
+import { CoreGameMatch } from '~/models/match/CoreGameMatch';
 
 async function getPregameMatch(user: AuthenticatedValorantUser) {
     const client = new ValorantMatchApiClient(user);
@@ -25,7 +26,7 @@ async function getCoregameMatch(user: AuthenticatedValorantUser) {
 
 export type LiveMatchLoaderData = {
     pregame?: PreGameMatch;
-    coregame?: ValorantCoreGame;
+    coregame?: CoreGameMatch;
     error?: string;
 };
 
@@ -33,7 +34,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const user = await requireUser(request);
     let error = undefined;
     try {
-        const pregame = TEST_MATCH;
+        const pregame = await getPregameMatch(user);
         const players = pregame.AllyTeam.Players;
         const [playersData, map] = await Promise.all([
             getPlayersInMatchDetails(user, players),
@@ -44,17 +45,21 @@ export const loader: LoaderFunction = async ({ request, params }) => {
             pregame: match,
         });
     } catch (exception: any) {
-        console.log(exception);
-        console.log('Error in pregame', exception.message);
         error = exception.message;
     }
     try {
         const coregame = await getCoregameMatch(user);
+        const players = coregame.Players;
+        const [playersData, map] = await Promise.all([
+            getPlayersInMatchDetails(user, players),
+            getMatchMap(coregame.MapID),
+        ]);
+        const match = new CoreGameMatch(coregame, playersData, map);
         return json<LiveMatchLoaderData>({
-            coregame: coregame,
+            coregame: match,
         });
     } catch (exception: any) {
-        console.log('Error', exception.message);
+        console.log('Got exception');
         if (error === undefined) {
             error = exception.message;
         }

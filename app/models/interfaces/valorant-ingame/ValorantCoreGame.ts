@@ -19,7 +19,7 @@ interface ValorantPlayerIdentity {
     HideAccountLevel: boolean;
 }
 
-interface ValorantPlayer {
+export interface ValorantCoreGamePlayer {
     Subject: string;
     TeamID: string;
     CharacterID: string;
@@ -48,6 +48,6 @@ export interface ValorantCoreGame {
     IsReconnectable: boolean;
     ConnectionDetails: ValorantConnectionDetails;
     PostGameDetails?: any;
-    Players: ValorantPlayer[];
+    Players: ValorantCoreGamePlayer[];
     MatchmakingData: ValorantMatchmakingData;
 }

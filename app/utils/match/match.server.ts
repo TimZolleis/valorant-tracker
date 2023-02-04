@@ -2,6 +2,7 @@ import type { Puuid } from '~/models/interfaces/valorant-ingame/ValorantPlayer';
 import type { ValorantMatchDetails } from '~/models/interfaces/valorant-ingame/ValorantMatchDetails';
 import { ValorantMediaContentApiClient } from '~/utils/api/valorant-media/ValorantMediaContentApiClient';
 import { MatchMapNotFoundException } from '~/models/exception/match/MatchMapNotFoundException';
+import { ServerRegions } from '~/models/static/ServerRegions';
 
 export function determinePlayerTeam(puuid: Puuid, matchDetails: ValorantMatchDetails) {
     const teamId = matchDetails.players.find((player) => {

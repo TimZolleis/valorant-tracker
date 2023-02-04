@@ -15,7 +15,7 @@ export function links() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-    const user = getUserFromSession(request);
+    const user = await getUserFromSession(request);
     return json({
         user,
     });

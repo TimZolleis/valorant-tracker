@@ -2,8 +2,9 @@ import { ValorantCompetitiveUpdate } from '~/models/interfaces/valorant-ingame/V
 import { PlayerStatistic } from '~/models/player/PlayerStatistic';
 import { MatchHistory } from '~/models/match/MatchHistory';
 import { ValorantMediaCharacter } from '~/models/interfaces/valorant-media/ValorantMediaCharacter';
-import { ValorantPlayer } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 import { ValorantNameService } from '~/models/interfaces/valorant-ingame/ValorantNameService';
+import { ValorantCoreGamePlayer } from '~/models/interfaces/valorant-ingame/ValorantCoreGame';
+import { ValorantPlayer } from '~/models/interfaces/valorant-ingame/ValorantPreGame';
 
 export class Player {
     details: PlayerDetails;
@@ -33,7 +34,7 @@ export class PlayerDetails {
 
 export class PlayerInMatch extends Player {
     character?: ValorantMediaCharacter;
-    currentMatchDetails: ValorantPlayer;
+    currentMatchDetails: ValorantCoreGamePlayer | ValorantPlayer;
 
     constructor(
         details: PlayerDetails,
@@ -41,7 +42,7 @@ export class PlayerInMatch extends Player {
         competitiveUpdate: ValorantCompetitiveUpdate,
         statistics: PlayerStatistic,
         character: ValorantMediaCharacter,
-        currentMatchDetails: ValorantPlayer
+        currentMatchDetails: ValorantCoreGamePlayer | ValorantPlayer
     ) {
         super(details, matchHistory, competitiveUpdate, statistics);
         this.character = character;

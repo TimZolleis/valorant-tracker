@@ -3,27 +3,7 @@ import { ServerRegions } from '~/models/static/ServerRegions';
 import { DefaultTag } from '~/components/tag/DefaultTag';
 import { TeamComponent } from '~/components/match/current/team/TeamComponent';
 import { PreGameMatch } from '~/models/match/PreGameMatch';
-
-function getServerRegion(gamePodId: string) {
-    if (gamePodId.includes('madrid')) {
-        return ServerRegions.MADRID;
-    }
-    if (gamePodId.includes('frankfurt')) {
-        return ServerRegions.FRANKFURT;
-    }
-    if (gamePodId.includes('london')) {
-        return ServerRegions.LONDON;
-    }
-    if (gamePodId.includes('paris')) {
-        return ServerRegions.PARIS;
-    }
-    if (gamePodId.includes('tokyo')) {
-        return ServerRegions.TOKYO;
-    }
-    if (gamePodId.includes('warsaw')) {
-        return ServerRegions.WARSAW;
-    } else return ServerRegions.UNKNOWN;
-}
+import { getServerRegion } from '~/utils/match/match.client';
 
 export const PregameComponent = ({ pregame }: { pregame: PreGameMatch }) => {
     return (

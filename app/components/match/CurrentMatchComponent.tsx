@@ -3,10 +3,13 @@ import { useFetcher } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import Live, { LiveMatchLoaderData } from '~/routes/match/live';
 import { PregameComponent } from '~/components/match/current/PregameComponent';
+import { CoregameComponent } from '~/components/match/current/CoregameComponent';
+import { useOptionalUser } from '~/utils/hooks/matches';
 
 type GameStatus = 'unknown' | 'pregame' | 'coregame';
 
 const CurrentMatchComponent = () => {
+    const user = useOptionalUser();
     const fetcher = useFetcher<LiveMatchLoaderData>();
 
     const checkForGame = () => {
@@ -38,6 +41,9 @@ const CurrentMatchComponent = () => {
 
     if (gameStatus === 'pregame' && fetcher.data?.pregame) {
         return <PregameComponent pregame={fetcher.data?.pregame} />;
+    }
+    if (gameStatus === 'coregame' && fetcher.data?.coregame) {
+        return <CoregameComponent coregame={fetcher.data.coregame}></CoregameComponent>;
     } else {
         return <NoCurrentMatchComponent onUpdate={checkForGame} isLoading={loadingState} />;
     }
