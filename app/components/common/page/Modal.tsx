@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const Modal = ({
@@ -12,6 +12,14 @@ export const Modal = ({
     titleElement: ReactNode;
     children: ReactNode;
 }) => {
+    useEffect(() => {
+        if (showModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [showModal]);
+
     return (
         <>
             <AnimatePresence>
@@ -20,7 +28,7 @@ export const Modal = ({
                         key={showModal.toString()}
                         onClick={() => toggleModal()}
                         className={
-                            'bg-black bg-opacity-30 p-3 fixed lg:px-60 left-0 top-0 right-0 bottom-0 flex flex-col items-center justify-center'
+                            'bg-black bg-opacity-30 p-3 z-50 fixed lg:px-32 left-0 top-0 right-0 bottom-0 flex flex-col items-center justify-center'
                         }
                         layout
                         initial={{
@@ -41,7 +49,7 @@ export const Modal = ({
                         <div
                             onClick={(e) => e.stopPropagation()}
                             className={
-                                'rounded-xl flex flex-col ring ring-1 ring-gray-600 bg-black md:px-5 md:py-5 w-full md:w-9/12'
+                                'rounded-xl flex flex-col ring ring-1 ring-gray-600/50 bg-black md:px-5 md:py-5 w-full overflow-y-scroll'
                             }>
                             <div
                                 className={
@@ -49,7 +57,7 @@ export const Modal = ({
                                 }>
                                 {titleElement}
                             </div>
-                            <div className={'mt-5'}>{children}</div>
+                            <div className={'mt-5 p-3'}>{children}</div>
                         </div>
                     </motion.div>
                 ) : null}

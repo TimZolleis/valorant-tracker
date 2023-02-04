@@ -4,22 +4,61 @@ import { Modal, useModal } from '~/components/common/page/Modal';
 import React, { SetStateAction, useEffect, useState } from 'react';
 import { WhiteButton } from '~/components/form/button/WhiteButton';
 import { AnimatePresence, motion } from 'framer-motion';
+import { PlayerInMatchStatisticsComponent } from '~/components/match/current/team/player/details/PlayerInMatchStatisticsComponent';
+import {
+    PlayerInMatchCharacterComponent,
+    PlayerLastMatchPerformanceComponent,
+} from '~/components/match/current/team/player/details/PlayerInMatchDetailsComponent';
+import { CompetitiveUpdateComponent } from '~/components/match/history/CompetitiveUpdateComponent';
+import ContentContainer from '~/components/common/page/ContentContainer';
+import { MatchHistoryComponent } from '~/components/match/history/MatchHistoryComponent';
 
 export const PlayerInMatchDetailsModal = ({
     players,
     initialIndex,
+    playerIndex,
+    showModal,
+    toggleModal,
 }: {
     players: PlayerInMatch[];
-    initialIndex?: number;
+    initialIndex: number;
+    playerIndex: number;
+    showModal: boolean;
+    toggleModal: any;
 }) => {
-    const { showModal, toggleModal } = useModal(true);
-    const [index, setIndex] = useState<number>(initialIndex ? initialIndex : 0);
+    const [index, setIndex] = useState<number>(initialIndex);
+    const [previousIndex, setPreviousIndex] = useState<number>(initialIndex ? initialIndex : 0);
+
+    const direction = previousIndex > index ? -1 : 1;
+
+    useEffect(() => {
+        console.log(players);
+        setIndex(playerIndex);
+    }, [playerIndex]);
+
+    const variants = {
+        enter: (direction: number) => {
+            return {
+                x: direction > 0 ? 1000 : -1000,
+                opacity: 0,
+            };
+        },
+        center: {
+            zIndex: 1,
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => {
+            return {
+                zIndex: 0,
+                x: direction < 0 ? 1000 : -1000,
+                opacity: 0,
+            };
+        },
+    };
 
     return (
-        <div>
-            <WhiteButton onClick={toggleModal} doesSubmit={false}>
-                <p>Toggle modal</p>
-            </WhiteButton>
+        <div className={'z-50'}>
             <AnimatePresence>
                 <Modal
                     showModal={showModal}
@@ -32,7 +71,32 @@ export const PlayerInMatchDetailsModal = ({
                             maxIndex={players.length - 1}
                         />
                     }>
-                    <p className={'text-white'}>Test Modal</p>
+                    <motion.div key={index}>
+                        <div className={'space-y-2'}>
+                            <PlayerInMatchStatisticsComponent
+                                statistic={players[index].statistics}
+                            />
+                            <div className={'grid grid-cols-1 md:grid-cols-2 gap-2 w-full'}>
+                                <PlayerInMatchCharacterComponent
+                                    character={players[index].character}
+                                />
+                                <PlayerLastMatchPerformanceComponent
+                                    puuid={players[index].details.nameService.Subject}
+                                    matchHistory={players[index].matchHistory}
+                                />
+                            </div>
+                            <div className={'grid grid-cols-1 sm:grid-cols-2 gap-2'}>
+                                <ContentContainer>
+                                    <CompetitiveUpdateComponent
+                                        competitiveUpdate={players[index].competitiveUpdate}
+                                    />
+                                </ContentContainer>
+                                <ContentContainer>
+                                    <MatchHistoryComponent history={players[index].matchHistory} />
+                                </ContentContainer>
+                            </div>
+                        </div>
+                    </motion.div>
                 </Modal>
             </AnimatePresence>
         </div>

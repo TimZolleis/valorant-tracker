@@ -31,7 +31,7 @@ function getRingColor(tagColor: TagColors) {
             return 'ring-red-800';
         }
         case 'bg-green-800': {
-            return 'ring-red-800';
+            return 'ring-green-800';
         }
         case 'bg-indigo-800': {
             return 'ring-indigo-800';

@@ -4,7 +4,7 @@ export const SmallCard = ({ headline, children }: { headline: string; children: 
     return (
         <div className={'py-3 px-5'}>
             <p className={'text-white font-inter font-semibold'}>{headline}</p>
-            <div>{children}</div>
+            <div className={'mt-2'}>{children}</div>
         </div>
     );
 };

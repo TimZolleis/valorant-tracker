@@ -30,55 +30,38 @@ export default function Index() {
 
     return (
         <>
-            <Suspense>
-                <PageHeader text={'Dashboard'} />
-                <div className={'space-y-5'}>
-                    <div className={'flex gap-2 w-full'}>
-                        <Suspense fallback={<div>Test...</div>}>
-                            <ContentContainer>
-                                <CurrentMatchComponent />
-                            </ContentContainer>
-                        </Suspense>
-                    </div>
-                    <div
-                        className={
-                            'grid grid-cols-1 gap-5 lg:grid-cols-3 auto-rows-min items-start'
-                        }>
+            <PageHeader text={'Dashboard'} />
+            <div className={'space-y-5'}>
+                <div className={'flex gap-2 w-full'}>
+                    <Suspense fallback={<div>Test...</div>}>
                         <ContentContainer>
-                            <Suspense fallback={<CardLoadingSkeleton />}>
-                                <Await<Promise<Player>>
-                                    resolve={playerPromise}
-                                    errorElement={
-                                        <div>
-                                            <p className={'text-white'}>Error lol</p>
-                                        </div>
-                                    }>
-                                    {(player) => (
-                                        <MatchHistoryComponent history={player.matchHistory} />
-                                    )}
-                                </Await>
-                            </Suspense>
+                            <CurrentMatchComponent />
                         </ContentContainer>
-                        <ContentContainer>
-                            <Suspense fallback={<CardLoadingSkeleton />}>
-                                <Await<Promise<Player>>
-                                    resolve={playerPromise}
-                                    errorElement={
-                                        <div>
-                                            <p className={'text-white'}>Error lol</p>
-                                        </div>
-                                    }>
-                                    {(player) => (
-                                        <CompetitiveUpdateComponent
-                                            competitiveUpdate={player.competitiveUpdate}
-                                        />
-                                    )}
-                                </Await>
-                            </Suspense>
-                        </ContentContainer>
-                    </div>
+                    </Suspense>
                 </div>
-            </Suspense>
+                <div className={'grid grid-cols-1 gap-5 lg:grid-cols-3 auto-rows-min items-start'}>
+                    <ContentContainer>
+                        <Suspense fallback={<CardLoadingSkeleton />}>
+                            <Await<Promise<Player>> resolve={playerPromise}>
+                                {(player) => (
+                                    <MatchHistoryComponent history={player.matchHistory} />
+                                )}
+                            </Await>
+                        </Suspense>
+                    </ContentContainer>
+                    <ContentContainer>
+                        <Suspense fallback={<CardLoadingSkeleton />}>
+                            <Await<Promise<Player>> resolve={playerPromise}>
+                                {(player) => (
+                                    <CompetitiveUpdateComponent
+                                        competitiveUpdate={player.competitiveUpdate}
+                                    />
+                                )}
+                            </Await>
+                        </Suspense>
+                    </ContentContainer>
+                </div>
+            </div>
         </>
     );
 }
